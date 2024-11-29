@@ -40,7 +40,7 @@ async function handleRegister(req, res) {
 
         return new ResponseUtil({
             success: true,
-            message: 'auth Registered Successfully',
+            message: 'Registered Successfully',
             data: null,
             statusCode: 200,
         }, res);
@@ -99,7 +99,7 @@ async function handleLogin(req, res) {
 
         return new ResponseUtil({
             success: true,
-            message: 'auth Logged In Successfully',
+            message: 'Logged In Successfully',
             data: responseauthData,
             statusCode: 200,
         }, res)

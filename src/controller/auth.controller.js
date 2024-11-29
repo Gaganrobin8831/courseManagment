@@ -1,7 +1,6 @@
-
 const argon2 = require('argon2');
-const ResponseUtil = require('../utility/response.utility');
-const { createToken } = require('../middleware/valdiate.middleware');
+const ResponseUtil = require('../utility/respone.utility');
+const { createToken } = require('../middleware/validate.middleware');
 const { auth } = require('../models/auth.models');
 
 async function handleRegister(req, res) {
@@ -134,7 +133,7 @@ async function handleLogin(req, res) {
     }
 }
 
-async function handleauthDetailEdit(req, res) {
+async function handleAuthDetailEdit(req, res) {
     // console.log('Authenticated auth:', req.user);
 
     const { name, email, password } = req.body;
@@ -280,7 +279,7 @@ async function handleFullDetailOfauth(req, res) {
 module.exports = {
     handleRegister,
     handleLogin,
-    handleauthDetailEdit,
+    handleAuthDetailEdit,
     handleLogout,
     handleFullDetailOfauth
 };

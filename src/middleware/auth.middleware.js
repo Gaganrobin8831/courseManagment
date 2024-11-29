@@ -1,6 +1,6 @@
 
 const ResponseUtil = require("../utility/respone.utility");
-const { validateToken } = require("./valdiate.middleware");
+const { validateToken } = require("./validate.middleware");
 
 
 

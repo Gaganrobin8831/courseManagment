@@ -19,7 +19,7 @@ const authSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['student'],
+        enum: ['student','admin'],
         default: 'student'
     }
 },{timestamps:true})

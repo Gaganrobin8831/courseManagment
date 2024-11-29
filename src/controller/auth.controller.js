@@ -26,7 +26,7 @@ async function handleRegister(req, res) {
                 statusCode: 409,
             }, res);
         }
-       
+
         const authData = new auth({
             name,
             email,
@@ -60,7 +60,7 @@ async function handleRegister(req, res) {
 async function handleLogin(req, res) {
     const { email, password } = req.body
     try {
-       
+
         const authData = await auth.findOne({ email });
         if (!authData) {
             return new ResponseUtil({
@@ -70,7 +70,7 @@ async function handleLogin(req, res) {
                 statusCode: 401,
             }, res)
         }
-       
+
         const decryptPassword = await argon2.verify(authData.password, password)
         if (!decryptPassword) {
             return new ResponseUtil({
@@ -82,17 +82,13 @@ async function handleLogin(req, res) {
         }
 
         const token = createToken(authData)
-
-        
         const responseauthData = {
-                name: authData.name,
-                email: authData.email,
-                role: authData.role,
-                token
-            }
-        
+            name: authData.name,
+            email: authData.email,
+            role: authData.role,
+            token
+        }
 
-       
         authData.token = token;
         authData.status = true
         await authData.save();
@@ -136,7 +132,7 @@ async function handleauthDetailEdit(req, res) {
 
         const updatedData = {
             name: name || authData.name,
-          
+
         };
 
         if (email !== authData.email) {
@@ -234,7 +230,7 @@ async function handleFullDetailOfauth(req, res) {
         }
 
         const authData = {
-            id:authDetail._id,
+            id: authDetail._id,
             name: authDetail.name,
             email: authDetail.email,
             // PhoneNumber: `${authDetail.countryCode} ${authDetail.contactNumber}`,

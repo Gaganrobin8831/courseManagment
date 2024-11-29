@@ -5,9 +5,10 @@ const { createToken } = require('../middleware/valdiate.middleware');
 const { auth } = require('../models/auth.models');
 
 async function handleRegister(req, res) {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     try {
+      
         const [existingauth, hashPassword] = await Promise.all([
             auth.findOne({ email }),
             argon2.hash(password, {
@@ -18,6 +19,7 @@ async function handleRegister(req, res) {
             }),
         ]);
 
+        
         if (existingauth) {
             return new ResponseUtil({
                 success: false,
@@ -27,21 +29,41 @@ async function handleRegister(req, res) {
             }, res);
         }
 
+        
+        const userRole = role || 'student';
+
+        
+        if (userRole === 'admin') {
+            const existingAdmin = await auth.findOne({ role: 'admin' });
+            if (existingAdmin) {
+                return new ResponseUtil({
+                    success: false,
+                    message: 'Only one admin can be registered',
+                    data: null,
+                    statusCode: 409,
+                }, res);
+            }
+        }
+
+        
         const authData = new auth({
             name,
             email,
             password: hashPassword,
+            role: userRole, 
         });
 
+      
         await authData.save();
 
+      
         const responseauthData = authData.toObject();
         delete responseauthData.password;
 
         return new ResponseUtil({
             success: true,
             message: 'Registered Successfully',
-            data: null,
+            data: responseauthData,
             statusCode: 200,
         }, res);
 

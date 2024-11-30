@@ -1,33 +1,43 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+
 const quizSchema = new mongoose.Schema({
-    title: {
-         type: String,
-         required: true
-    },
-    questions: [
-        {
+  title: {
+    type: String,
+    required: true
+  },
+  questions: [
+    {
       question: { 
-        type: String,
-         required: true
-        },
+        type: String, 
+        required: true
+      },
       options: [
         {
-         type: String 
+          type: String,
+          required: true
         }
-    ],
+      ],
       correctAnswer: {
-         type: String 
-        },
+        type: String, 
+        required: true
+      },
       questionType: { 
         type: String, 
         enum: ['MCQ', 'True/False'],
-        required: true },
-    }],
-    duration: { type: Number, required: true }, 
-    passThreshold: { type: Number, required: true }, 
-  },{timestamps:true});
-  
-const quiz = mongoose.model('Quiz', quizSchema);
-module.exports = {
-    quiz
-}
+        required: true
+      },
+    }
+  ],
+  duration: { 
+    type: Number, 
+    required: true
+  }, 
+  passThreshold: { 
+    type: Number, 
+    required: true
+  }, 
+}, { timestamps: true });
+
+const Quiz = mongoose.model('Quiz', quizSchema);
+
+module.exports = Quiz;

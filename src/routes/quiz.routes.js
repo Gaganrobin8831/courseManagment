@@ -1,30 +1,25 @@
 const express = require('express');
-const Quiz = require('../models/Quiz');
+const Quiz = require('../models/quiz.models');
 const { checkAuth } = require('../middleware/auth.middleware');
-const router = express.Router();
+const quizRouter = express.Router();
+const  {
+  handleCreateQuiz,
+  handleGetQuiz,
+  handleEditQuiz,
+  handleDeleteQuiz
+}= require('../controller/quiz.controller')
 
-router.post('/quizzes',checkAuth, async (req, res) => {
-  const { title, questions, duration, passThreshold } = req.body;
+// Create a new quiz
+quizRouter.post('/quizzes', checkAuth,handleCreateQuiz);
 
-  try {
-    const newQuiz = new Quiz({ title, questions, duration, passThreshold });
-    await newQuiz.save();
-    
-    return new ResponseUtil({
-        success: false,
-        message: 'Course assigned to student successfully',
-        data: newQuiz,
-        statusCode: 201,
-    }, res);
-  } catch (error) {
-    return new ResponseUtil({
-        success: false,
-        message: 'Error creating quiz',
-        data: null,
-        statusCode: 500,
-        errors:error
-    }, res);
-  }
-});
+// Get all quizzes
+quizRouter.get('/quizzes', checkAuth,handleGetQuiz);
 
-module.exports = router;
+// Update a quiz
+quizRouter.put('/quizzes/:id', checkAuth, handleEditQuiz);
+
+// Delete a quiz and remove its reference from all lessons
+quizRouter.delete('/quizzes/:id', checkAuth, handleDeleteQuiz);
+
+
+module.exports = quizRouter;

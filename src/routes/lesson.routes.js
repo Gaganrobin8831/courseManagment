@@ -1,10 +1,6 @@
 const express = require('express');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
-const streamifier = require('streamifier');
-const Lesson = require('../models/lesson.models');
-const ResponseUtil = require('../utility/respone.utility');
-const { Course } = require('../models/course.models');
 const { checkAuth } = require('../middleware/auth.middleware');
 const { handleCreateLessaon } = require('../controller/lesson.controller');
 

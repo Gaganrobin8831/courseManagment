@@ -47,7 +47,7 @@ async function createCourse(req, res){
 
 async function  getAllCourses(req, res)  {
   try {
-    const courses = await Course.find({}) .populate('lessons', 'title content video image pdf quiz') 
+    const courses = await Course.find({}).populate('lessons', 'title content video image pdf quiz') 
     return new ResponseUtil(
       { success: true, message: 'Courses fetched successfully', data: courses, statusCode: 200 },
       res

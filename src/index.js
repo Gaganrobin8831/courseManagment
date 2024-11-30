@@ -9,6 +9,7 @@ const compression = require('compression')
 const lessonRouter = require('./routes/lesson.routes')
 const quizRouter = require('./routes/quiz.routes')
 const adminRouter = require('./routes/admin.routes')
+const studentRouter = require('./routes/student.routes')
 app.use(compression())
 
 app.use(express.json())
@@ -19,6 +20,8 @@ app.use('/api',courseRouter)
 app.use('/api',lessonRouter)
 app.use('/api',quizRouter)
 app.use('/api',adminRouter)
+app.use('/api',studentRouter)
+
 
 
 connectDB()

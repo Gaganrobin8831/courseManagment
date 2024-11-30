@@ -5,15 +5,15 @@ const progressSchema = new mongoose.Schema(
     {
     studentId: {
          type: mongoose.Schema.Types.ObjectId,
-         ref: 'Student' 
+         ref: 'students' 
         },
     lessonId: {
          type: mongoose.Schema.Types.ObjectId,
-         ref: 'Lesson' 
+         ref: 'lessons' 
         },
     quizId: {
          type: mongoose.Schema.Types.ObjectId,
-         ref: 'Quiz' 
+         ref: 'qizzes' 
         },
     status: { 
         type: String,

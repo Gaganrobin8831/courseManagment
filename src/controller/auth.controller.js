@@ -133,73 +133,6 @@ async function handleLogin(req, res) {
     }
 }
 
-async function handleAuthDetailEdit(req, res) {
-    // console.log('Authenticated auth:', req.user);
-
-    const { name, email, password } = req.body;
-    // console.log({ name, email, password, countryCode, contactNumber })
-    try {
-        const { id } = req.user;
-        const authData = await auth.findById(id);
-
-        if (!authData) {
-            return new ResponseUtil({
-                success: false,
-                message: 'auth not found',
-                data: null,
-                statusCode: 404,
-            }, res);
-        }
-
-        const updatedData = {
-            name: name || authData.name,
-
-        };
-
-        if (email !== authData.email) {
-            return new ResponseUtil({
-                success: false,
-                message: 'You cannot update your email',
-                data: null,
-                statusCode: 400,
-            }, res);
-        }
-
-        if (password) {
-            updatedData.password = await argon2.hash(password, {
-                type: argon2.argon2id,
-                memoryCost: 2 ** 10,
-                timeCost: 2,
-                parallelism: 1,
-            });
-        }
-
-        Object.assign(authData, updatedData);
-        await authData.save();
-
-        const responseauthData = authData.toObject();
-        delete responseauthData.password;
-        delete responseauthData.token;
-
-        return new ResponseUtil({
-            success: true,
-            message: 'auth details updated successfully',
-            data: responseauthData,
-            statusCode: 200,
-        }, res);
-
-    } catch (error) {
-        console.log(error);
-        return new ResponseUtil({
-            success: false,
-            message: 'Error occurred while updating auth details',
-            data: null,
-            statusCode: 500,
-            errors: error.message || error,
-        }, res);
-    }
-}
-
 async function handleLogout(req, res) {
     try {
         const { id } = req.user;
@@ -237,49 +170,10 @@ async function handleLogout(req, res) {
     }
 }
 
-async function handleFullDetailOfauth(req, res) {
-    const { id } = req.user;
-    try {
-        const authDetail = await auth.findById(id)
-        if (!authDetail) {
-            return new ResponseUtil({
-                success: false,
-                message: "Do Not Get Detail",
-                data: null,
-                statusCode: 404,
-            }, res)
-        }
 
-        const authData = {
-            id: authDetail._id,
-            name: authDetail.name,
-            email: authDetail.email,
-            // PhoneNumber: `${authDetail.countryCode} ${authDetail.contactNumber}`,
-            role: authDetail.role
-        }
-
-        return new ResponseUtil({
-            success: true,
-            message: "auth Detail",
-            data: authData,
-            statusCode: 200
-        }, res)
-
-
-    } catch (error) {
-        return new ResponseUtil({
-            success: false,
-            message: "Internal Server error",
-            data: null,
-            statusCode: 500,
-            errors: error.message || error
-        }, res)
-    }
-}
 module.exports = {
     handleRegister,
     handleLogin,
-    handleAuthDetailEdit,
     handleLogout,
-    handleFullDetailOfauth
+    
 };

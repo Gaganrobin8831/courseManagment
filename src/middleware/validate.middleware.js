@@ -7,7 +7,8 @@ function createToken(admin) {
         id: admin._id,
         name: admin.name,
         email: admin.email,
-        status: admin.status
+        status: admin.status,
+        role: admin.role
     }
 
     const token = JWT.sign(payload, secret, { expiresIn: "1d" })

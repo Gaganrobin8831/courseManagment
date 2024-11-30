@@ -1,7 +1,7 @@
 
 const ResponseUtil = require("../utility/respone.utility");
 const { validateToken } = require("./validate.middleware");
-
+const { auth } = require('../models/auth.models');
 
 
 async function checkAuth(req, res, next) {
@@ -20,16 +20,16 @@ async function checkAuth(req, res, next) {
     try {
         const adminPayload = validateToken(token)
         req.user = adminPayload
-        // const { id } = req.user
-        // const adminData = await admin.findById(id);
-        // if (adminData.token === null) {
-        //     return new ResponseUtil({
-        //         success: false,
-        //         message: 'Unauthorized',
-        //         data: null,
-        //         statusCode: 401,
-        //     }, res);
-        // }
+        const { id } = req.user
+        const adminData = await auth.findById(id);
+        if (adminData.token === null) {
+            return new ResponseUtil({
+                success: false,
+                message: 'Unauthorized',
+                data: null,
+                statusCode: 401,
+            }, res);
+        }
         next()
     } catch (error) {
 

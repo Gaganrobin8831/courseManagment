@@ -11,10 +11,10 @@ const { checkAuth } = require('../middleware/auth.middleware');
 const courseRouter = express.Router();
 
 
-courseRouter.post('/courses', checkAuth, createCourse); 
-courseRouter.get('/courses', checkAuth, getAllCourses); 
-courseRouter.get('/courses/:id', checkAuth, getCourseById); 
-courseRouter.put('/courses/:id', checkAuth, updateCourse); 
-courseRouter.delete('/courses/:id', checkAuth, deleteCourse); 
+courseRouter.route('/courses').post( checkAuth, createCourse); 
+courseRouter.route('/courses').get( checkAuth, getAllCourses); 
+courseRouter.route('/courses/:id').get( checkAuth, getCourseById); 
+courseRouter.route('/courses/:id').put( checkAuth, updateCourse); 
+courseRouter.route('/courses/:id').delete( checkAuth, deleteCourse); 
 
 module.exports = courseRouter;

@@ -2,13 +2,19 @@ require('dotenv').config()
 const express = require('express')
 const { connectDB } = require('./DB/database.DB')
 const { authRouter } = require('./routes/auth.routes')
+const courseRouter = require('./routes/course.routes')
 const app = express()
 const port = process.env.PORT || 3000
+const compression = require('compression')
+const lessonRouter = require('./routes/lesson.routes')
+app.use(compression())
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
 app.use('/api',authRouter)
+app.use('/api',courseRouter)
+app.use('/api',lessonRouter)
 connectDB()
 .then(()=>{
     app.listen(port,()=>{

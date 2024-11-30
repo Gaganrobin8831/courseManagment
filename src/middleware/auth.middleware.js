@@ -6,7 +6,7 @@ const { auth } = require('../models/auth.models');
 
 async function checkAuth(req, res, next) {
     const token = req.headers.authorization?.split(' ')[1]
-
+    // console.log({token})
     if (!token) {
         return new ResponseUtil({
             success: false,

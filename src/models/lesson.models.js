@@ -1,33 +1,13 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const lessonSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    content: {
-        type: String,
-        required: true
-    },
-    video: {
-        type: String
-    },
-    image: {
-        type: String
-    },
-    pdf: {
-        type: String
-    },
-    quizzes: [
-        {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Quiz'    
-        }
-    ],
-},{timestamps:true});
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  video: { type: String, required: false },
+  image: { type: String, required: false },
+  pdf: { type: String, required: false },
+  quiz: { type: mongoose.Schema.Types.ObjectId, ref: 'Quiz', default: null },  
+});
 
-const lesson = mongoose.model('Lesson', lessonSchema);
-
-module.exports = {
-    lesson
-}
+const Lesson = mongoose.model('Lesson', lessonSchema);
+module.exports = Lesson;

@@ -19,6 +19,8 @@ app.use('/api',courseRouter)
 app.use('/api',lessonRouter)
 app.use('/api',quizRouter)
 app.use('/api',adminRouter)
+
+
 connectDB()
 .then(()=>{
     app.listen(port,()=>{

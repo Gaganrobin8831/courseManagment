@@ -61,7 +61,7 @@ Follow these steps to set up and run the project locally:
 
 ## Clone the repository:
 ```
-git clone https://github.com/Gaganrobin8831/ChatAppGagan/tree/main
+git clone https://github.com/Gaganrobin8831/courseManagment
 ```
 ## Install dependencies:
 ```

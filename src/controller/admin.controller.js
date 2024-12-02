@@ -36,7 +36,7 @@ async function handleAssignCourses(req, res) {
 
       return new ResponseUtil({
         success: true,
-        message: 'Course assigned successfully',
+        message: 'Course assigned to student successfully',
         data: null,
         statusCode: 200,
       }, res);
@@ -126,7 +126,7 @@ async function handleAssignQuizToLesson(req, res) {
 
       return new ResponseUtil({
         success: true,
-        message: 'Quiz assigned successfully',
+        message: 'Quiz assigned to lesson successfully',
         data: null,
         statusCode: 200,
       }, res);

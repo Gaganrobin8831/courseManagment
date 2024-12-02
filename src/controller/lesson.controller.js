@@ -129,7 +129,7 @@ async function handleCreateLessaon(req,res) {
             success: true,
             message: 'Lesson created successfully',
             data: newLesson,
-            statusCode: 201,
+            statusCode: 200,
           }, res);
       
         } catch (error) {

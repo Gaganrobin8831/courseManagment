@@ -36,9 +36,9 @@ paths:
         '200':
           description: "User registered successfully"
         '400':
-          description: "Bad request"
+          description: "Already Registered"
         '500':
-          description: "Internal server error"
+          description: "Error Occurred"
 
   /login:
     post:
@@ -63,11 +63,11 @@ paths:
               - password
       responses:
         '200':
-          description: "User logged in successfully"
+          description: "Studend Or Admin logged in successfully"
         '401':
-          description: "Unauthorized - Invalid credentials"
+          description: "Invalid Email or Password"
         '500':
-          description: "Internal server error"
+          description: "Error Occurred"
 
   /logout:
     post:
@@ -81,8 +81,8 @@ paths:
       responses:
         '200':
           description: "User logged out successfully"
-        '401':
-          description: "Unauthorized - Invalid token"
+        '404':
+          description: "User not found"
         '500':
           description: "Internal server error"
 
@@ -111,11 +111,11 @@ paths:
         '200':
           description: "Course assigned to student successfully"
         '400':
-          description: "Bad request"
+          description: "Student or Course not found"
         '401':
           description: "Unauthorized"
         '500':
-          description: "Internal server error"
+          description: "Error assigning course"
 
   /assign-lesson:
     post:
@@ -140,13 +140,13 @@ paths:
               - courseId
       responses:
         '200':
-          description: "Lesson assigned to course successfully"
+          description: "Lesson Assigned To Course successfully"
         '400':
-          description: "Bad request"
+          description: "Student or Course not found"
         '401':
           description: "Unauthorized"
         '500':
-          description: "Internal server error"
+          description: "Error assigning lesson"
 
   /assign-quiz:
     post:
@@ -173,13 +173,13 @@ paths:
         '200':
           description: "Quiz assigned to lesson successfully"
         '400':
-          description: "Bad request"
+          description: "Quiz or Lesson not found"
         '401':
           description: "Unauthorized"
         '500':
-          description: "Internal server error"
+          description: "Error assigning course"
 
-  /admin/reports:
+  /students/reports:
     get:
       summary: "Generate reports for all students"
       description: "Generate a report for all students."
@@ -191,10 +191,10 @@ paths:
       responses:
         '200':
           description: "Report generated successfully"
-        '401':
-          description: "Unauthorized - Invalid token"
+        '400':
+          description: "Only Admin Can See All Students Detail"
         '500':
-          description: "Internal server error"
+          description: "Error generating reports"
 
   /courses:
     post:
@@ -221,11 +221,11 @@ paths:
         '200':
           description: "Course created successfully"
         '400':
-          description: "Bad request"
+          description: "Only admin can create courses"
         '401':
           description: "Unauthorized"
         '500':
-          description: "Internal server error"
+          description: "Error creating course"
 
   /getCourseProgress:
     post:
@@ -250,13 +250,13 @@ paths:
               - courseId
       responses:
         '200':
-          description: "Course progress retrieved successfully"
+          description: "Courses fetched successfully"
         '400':
-          description: "Bad request"
+          description: "Only Admin Can See All Courses Detail"
         '401':
           description: "Unauthorized"
         '500':
-          description: "Internal server error"
+          description: "Error fetching courses"
 
   /courses/{id}:
     get:
@@ -280,7 +280,7 @@ paths:
         '404':
           description: "Course not found"
         '500':
-          description: "Internal server error"
+          description: "Error fetching course"
 
     put:
       summary: "Update course by ID"
@@ -316,7 +316,7 @@ paths:
         '404':
           description: "Course not found"
         '500':
-          description: "Internal server error"
+          description: "Error updating course"
 
     delete:
       summary: "Delete course by ID"
@@ -333,15 +333,15 @@ paths:
           type: string
       responses:
         '200':
-          description: "Course deleted successfully"
+          description: "Course deleted successfully and removed from students"
         '400':
-          description: "Bad request"
+          description: "Only Admin Can Delete Courses"
         '401':
           description: "Unauthorized"
         '404':
           description: "Course not found"
         '500':
-          description: "Internal server error"
+          description: "Error deleting course"
 
     /quizzes:
     post:
@@ -382,6 +382,41 @@ paths:
         '500':
           description: "Internal server error"
 
+  /quizzes:
+      post:
+        summary: "Create the  quize"
+        description: "Create the  quize."
+        operationId: "handleCreateQuiz"
+        tags:
+        - "Quiz"
+        requestBody:
+        description: "Quiz information for creation"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                questions:
+                   type: array
+                duration:
+                   type: number   
+                passThreshold:
+                   type: number
+              required:
+              - name
+              - description
+        responses:
+          '200':
+            description: "Quiz created successfully"
+          '401':
+            description: "Unauthorized"
+          '400':
+            description: "Quiz Already Exits"
+          '500':
+            description: "Error creating quiz"
+
   /quizzes/{id}:
     get:
       summary: "Get all quizzes"
@@ -391,11 +426,11 @@ paths:
       - "Quiz"
       responses:
         '200':
-          description: "All quizzes retrieved successfully"
+          description: "Quizzes retrieved successfully"
         '401':
           description: "Unauthorized"
         '500':
-          description: "Internal server error"
+          description: "Error retrieving quizzes"
 
     put:
       summary: "Update a quiz"
@@ -433,13 +468,13 @@ paths:
         '200':
           description: "Quiz updated successfully"
         '400':
-          description: "Bad request"
+          description: "Only Admin Can Update Quizes"
         '401':
           description: "Unauthorized"
         '404':
           description: "Quiz not found"
         '500':
-          description: "Internal server error"
+          description: "Error updating quiz"
 
     delete:
       summary: "Delete a quiz"
@@ -456,9 +491,9 @@ paths:
           type: string
       responses:
         '200':
-          description: "Quiz deleted successfully"
+          description: "Quiz deleted and references removed from lessons successfully"
         '400':
-          description: "Bad request"
+          description: "Only Admin Can Delete Quizes"
         '401':
           description: "Unauthorized"
         '404':
@@ -473,6 +508,18 @@ paths:
       operationId: "handleStudentDetail"
       tags:
       - "Student"
+      requestBody:
+      description: "Quiz information for creation"
+      content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string 
+              required:
+              - name
+              - description
       responses:
         '200':
           description: "Student details retrieved successfully"
@@ -490,20 +537,27 @@ paths:
       operationId: "handlePlayQuiz"
       tags:
       - "Student"
-      parameters:
-      - in: path
-        name: quizId
-        required: true
-        description: "ID of the quiz"
-        schema:
-          type: string
+      requestBody:
+        description: "Quiz information for play"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                studentId:
+                  type: string
+                lessonId:
+                   type: string
+              required:
+              - name
+              - description
       responses:
         '200':
-          description: "Quiz played successfully"
+          description: "Lesson and quizzes fetched and create progress successfully"
         '400':
           description: "Bad request"
-        '401':
-          description: "Unauthorized"
+        '404':
+          description: "Lesson not found"
         '500':
           description: "Internal server error"
 
@@ -545,7 +599,7 @@ paths:
         '401':
           description: "Unauthorized"
         '500':
-          description: "Internal server error"
+          description: "Error submitting quiz"
 
   /lessonCompletion:
     get:
@@ -556,11 +610,11 @@ paths:
       - "Student"
       responses:
         '200':
-          description: "Lesson completion retrieved successfully"
+          description: "Lesson completion details fetched successfully"
         '400':
           description: "Bad request"
-        '401':
-          description: "Unauthorized"
+        '404':
+          description: "Lesson not found"
         '500':
           description: "Internal server error"
 
@@ -603,6 +657,8 @@ paths:
           description: "Lesson created successfully"
         '400':
           description: "Bad request"
+        '404':
+          description: "Course not found"
         '500':
           description: "Internal server error"
 
@@ -629,10 +685,8 @@ components:
           type: String,
           enum: ['student','admin']
         Courses:
-          type: array,
-          items:
-            type: string
-            format: ObjectId
+          type: string
+          format: ObjectId
       required:
       - name
       - email
@@ -653,10 +707,8 @@ components:
             type: string
             format: ObjectId
         createdBy:
-          type: array
-          items:
-            type: string
-            format: ObjectId    
+          type: string
+          format: ObjectId    
       required:
       - id
       - name

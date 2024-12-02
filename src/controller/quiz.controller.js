@@ -160,7 +160,7 @@ async function handleDeleteQuiz(req,res) {
     } catch (error) {
       return new ResponseUtil({
         success: false,
-        message: 'Error deleting quiz or removing references from lessons',
+        message: 'Internal server error',
         data: null,
         statusCode: 500,
         errors: error,

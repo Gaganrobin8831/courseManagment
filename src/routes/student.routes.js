@@ -7,7 +7,7 @@ const { getLessonCompletion } = require('../controller/progress.controller');
 //get full student detail student id using { id } 
 studentRouter.route('/studentDetail').get(handleStudentDetail)
 // student quiz detail { studentId, lessonId } 
-studentRouter.route('/playQuiz/:quizId').post(handlePlayQuiz)
+studentRouter.route('/playQuiz').post(handlePlayQuiz)
 // submit quiz const { lessonId } = req.params { answers, studentId } = req.body;
 studentRouter.route('/submitQuiz/:lessonId').post(handleSubmitQuiz)
 

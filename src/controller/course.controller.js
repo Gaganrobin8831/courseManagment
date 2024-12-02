@@ -122,23 +122,7 @@ async function updateCourse(req, res)  {
   }
   try {
     
-    if (req.user.role !== 'admin') {
-      return new ResponseUtil(
-        { success: false, message: 'Only admin can update courses', data: null, statusCode: 403 },
-        res
-      );
-    }
-    if(req.user.name){
-      return new ResponseUtil(
-        {
-          success: false,
-          message: 'No You Can not Update name',
-          data: null,
-          statusCode: 403
-        },res
-      )
-    }
-   
+
     const updatedCourse = await Course.findByIdAndUpdate(
       id,
       { description }, 

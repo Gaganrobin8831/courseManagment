@@ -59,10 +59,10 @@ async function getLessonCompletion(req, res) {
     }, res);
 
   } catch (error) {
-    console.error('Error calculating lesson completion:', error);
+    // console.error('Error calculating lesson completion:', error);
     return new ResponseUtil({
       success: false,
-      message: 'Error calculating lesson completion',
+      message: 'Internal server error',
       data: null,
       statusCode: 500,
       errors: error,

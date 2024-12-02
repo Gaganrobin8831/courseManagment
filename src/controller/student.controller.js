@@ -31,7 +31,7 @@ async function handleStudentDetail(req, res) {
     console.error(error);
     return new ResponseUtil({
       success: false,
-      message: 'Error Occurred',
+      message: 'Internal server error',
       data: null,
       statusCode: 500,
       errors: error.message || error,
@@ -40,7 +40,7 @@ async function handleStudentDetail(req, res) {
 }
 
 async function handlePlayQuiz(req, res) {
-  const { quizId } = req.params;
+  // const { quizId } = req.params;
   const { studentId, lessonId } = req.body;
 
   try {
@@ -75,7 +75,7 @@ async function handlePlayQuiz(req, res) {
 
     return new ResponseUtil({
       success: true,
-      message: 'Lesson and quizzes fetched successfully',
+      message: 'Lesson and quizzes fetched and create progress successfully',
       data: {
         lessonTitle: lesson.title,
         lessonContent: lesson.content,
@@ -91,14 +91,13 @@ async function handlePlayQuiz(req, res) {
     console.log(error)
     return new ResponseUtil({
       success: false,
-      message: 'Error retrieving quiz',
+      message: 'Internal server error',
       data: null,
       statusCode: 500,
       errors: error,
     }, res);
   }
 }
-
 
 async function handleSubmitQuiz(req, res) {
   const { lessonId } = req.params;

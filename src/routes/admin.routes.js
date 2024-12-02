@@ -13,6 +13,6 @@ adminRouter.post('/assign-lesson', checkAuth, handleAssignLessonToCourses);
 adminRouter.post('/assign-quiz', checkAuth, handleAssignQuizToLesson);
 
 // Generate reports for all students
-adminRouter.get('/admin/reports', checkAuth,handleGetReportsStudents);
+adminRouter.get('/students/reports', checkAuth,handleGetReportsStudents);
 
 module.exports = adminRouter;

@@ -1,4 +1,5 @@
 const { Course } = require('../models/course.models');
+const { Progress } = require('../models/progress.models');
 const ResponseUtil = require('../utility/respone.utility'); 
 
 
@@ -210,10 +211,80 @@ async function updateCourse(req, res)  {
   }
 };
 
+async function getCourseProgress(req, res) {
+  const { studentId, courseId } = req.body;
+  try {
+    const course = await Course.findById(courseId).populate('lessons');
+    
+    if (!course) {
+      return new ResponseUtil({
+        success: false,
+        message: 'Course not found',
+        data: null,
+        statusCode: 404,
+      }, res);
+    }
+
+    const totalLessons = course.lessons.length;
+
+    if (totalLessons === 0) {
+      return new ResponseUtil({
+        success: true,
+        message: 'No lessons in this course',
+        data: {
+          status: 'no_lessons',
+          completionPercentage: 0
+        },
+        statusCode: 200,
+      }, res);
+    }
+
+    const progress = await Progress.find({
+      studentId,
+      lessonId: { $in: course.lessons }
+    }).populate('lessonId');
+
+    const completedLessons = progress.filter(p => p.status === 'completed').length;
+    console.log(totalLessons);
+    
+    const completionPercentage = totalLessons > 0 
+      ? (completedLessons / totalLessons) * 100 
+      : 0;
+
+    let courseStatus = 'not_started';
+    if (completedLessons === totalLessons) {
+      courseStatus = 'completed';
+    } else if (completedLessons > 0) {
+      courseStatus = 'in_progress';
+    }
+
+    return new ResponseUtil({
+      success: true,
+      message: 'Course progress details fetched successfully',
+      data: {
+        status: courseStatus,
+        completionPercentage: Math.round(completionPercentage)
+      },
+      statusCode: 200,
+    }, res);
+  } catch (error) {
+    console.error('Error calculating course progress:', error);
+    return new ResponseUtil({
+      success: false,
+      message: 'Error calculating course progress',
+      data: null,
+      statusCode: 500,
+      errors: error,
+    }, res);
+  }
+}
+
+
 module.exports = {
   createCourse,
   getAllCourses,
   getCourseById,
   updateCourse,
   deleteCourse,
+  getCourseProgress
 }

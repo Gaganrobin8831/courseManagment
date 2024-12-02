@@ -1,31 +1,46 @@
-const mongoose = require('mongoose');
 const Lesson = require('../models/lesson.models');
-const Progress = require('../models/progress.models');
-const Quiz = require('../models/quiz.models');
+const {Progress} = require('../models/progress.models');
+const ResponseUtil = require('../utility/respone.utility'); 
 
-const getLessonCompletion = async (studentId, lessonId) => {
+async function getLessonCompletion(req, res) {
+  const {studentId, lessonId} = req.body
   try {
-    // Step 1: Get all quizzes related to the lesson
+    
     const lesson = await Lesson.findById(lessonId).populate('quiz');
+    // console.log(lesson.quiz);
+    // let quizId = lesson.quiz._id
+    
+    if (!lesson) {
+      return new ResponseUtil({
+        success: false,
+        message: 'Lesson not found',
+        data: null,
+        statusCode: 404,
+      }, res);
+    }
+
     const totalQuizzes = lesson.quiz.length;
 
     if (totalQuizzes === 0) {
-      return {
-        status: 'no_quiz',  // If there are no quizzes for the lesson
-        completionPercentage: 0
-      };
+      return new ResponseUtil({
+        success: true,
+        message: 'No quizzes in this lesson',
+        data: {
+          status: 'no_quiz',
+          completionPercentage: 0
+        },
+        statusCode: 200,
+      }, res);
     }
 
-    // Step 2: Get progress of the student for each quiz in this lesson
     const progress = await Progress.find({ studentId, lessonId }).populate('quizId');
-
-    // Step 3: Count completed quizzes
+   console.log({progress})
     const completedQuizzes = progress.filter(p => p.status === 'completed').length;
 
-    // Step 4: Calculate completion percentage
+
     const completionPercentage = (completedQuizzes / totalQuizzes) * 100;
 
-    // Step 5: Determine the overall lesson status
+   
     let lessonStatus = 'not_started';
     if (completedQuizzes === totalQuizzes) {
       lessonStatus = 'completed';
@@ -33,15 +48,26 @@ const getLessonCompletion = async (studentId, lessonId) => {
       lessonStatus = 'in_progress';
     }
 
-    return {
-      status: lessonStatus,
-      completionPercentage: Math.round(completionPercentage)
-    };
+    return new ResponseUtil({
+      success: true,
+      message: 'Lesson completion details fetched successfully',
+      data: {
+        status: lessonStatus,
+        completionPercentage: Math.round(completionPercentage)
+      },
+      statusCode: 200,
+    }, res);
+
   } catch (error) {
     console.error('Error calculating lesson completion:', error);
-    throw error;
+    return new ResponseUtil({
+      success: false,
+      message: 'Error calculating lesson completion',
+      data: null,
+      statusCode: 500,
+      errors: error,
+    }, res);
   }
 };
-
 
 module.exports = { getLessonCompletion };

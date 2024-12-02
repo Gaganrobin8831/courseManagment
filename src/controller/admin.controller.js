@@ -126,7 +126,7 @@ async function handleAssignQuizToLesson(req, res) {
 
       return new ResponseUtil({
         success: true,
-        message: 'Course assigned successfully',
+        message: 'Quiz assigned successfully',
         data: null,
         statusCode: 200,
       }, res);
@@ -174,7 +174,8 @@ async function handleAssignLessonToCourses(req, res) {
     console.log(course.lessons.includes(lessonId))
     if (!course.lessons.includes(lessonId)) {
       course.lessons.push(lessonId);
-      await course.save();
+      await Course.findByIdAndUpdate(courseId, { lessons: course.lessons });
+
       console.log("lessonId, course");
 
       return new ResponseUtil({
@@ -188,6 +189,7 @@ async function handleAssignLessonToCourses(req, res) {
 
 
   } catch (error) {
+    console.log(error)
     return new ResponseUtil({
       success: false,
       message: 'Error assigning lesson',
@@ -197,6 +199,8 @@ async function handleAssignLessonToCourses(req, res) {
     }, res);
   }
 }
+
+
 module.exports = {
   handleAssignCourses,
   handleGetReportsStudents,

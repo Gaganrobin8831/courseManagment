@@ -1,167 +1,197 @@
 const { auth } = require('../models/auth.models');
+const Lesson = require('../models/lesson.models');
 const { Progress } = require('../models/progress.models');
 const Quiz = require('../models/quiz.models');
 const ResponseUtil = require('../utility/respone.utility');
 
-async function handleStudentDetail(req,res) {
-    // const {id} = req.user
-    const {id} = req.body
-    try{
-        
-         const student = await auth
-         .findOne({ _id: id })
-         .select("name _id email")
-         .populate({
-             path: 'Courses', 
-             populate: {
-                 path: 'lessons', 
-                 model: 'Lesson', 
-             }
-         });
-           return new ResponseUtil({
-            success: true,
-            message: 'Successfully',
-            data: student,
-            statusCode: 200,
-            
-        }, res);
+async function handleStudentDetail(req, res) {
+  // const {id} = req.user
+  const { id } = req.body
+  try {
 
-    }catch(error){
-        console.error(error);
-        return new ResponseUtil({
-            success: false,
-            message: 'Error Occurred',
-            data: null,
-            statusCode: 500,
-            errors: error.message || error,
-        }, res);
-    }
+    const student = await auth
+      .findOne({ _id: id })
+      .select("name _id email")
+      .populate({
+        path: 'Courses',
+        populate: {
+          path: 'lessons',
+          model: 'Lesson',
+        }
+      });
+    return new ResponseUtil({
+      success: true,
+      message: 'Successfully',
+      data: student,
+      statusCode: 200,
+
+    }, res);
+
+  } catch (error) {
+    console.error(error);
+    return new ResponseUtil({
+      success: false,
+      message: 'Error Occurred',
+      data: null,
+      statusCode: 500,
+      errors: error.message || error,
+    }, res);
+  }
 }
 
 async function handlePlayQuiz(req, res) {
-    const { quizId } = req.params;  
-    const { studentId } = req.user; 
-  
-    try {
-   
-      const quiz = await Quiz.findById(quizId);
-      if (!quiz) {
-        return new ResponseUtil({
-          success: false,
-          message: 'Quiz not found',
-          data: null,
-          statusCode: 404,
-        }, res);
-      }
-  
-   
-      let progress = await Progress.findOne({ studentId, quizId });
-      if (!progress) {
+  const { quizId } = req.params;
+  const { studentId, lessonId } = req.body;
 
-        progress = new Progress({
-          studentId,
-          quizId,
-          status: 'not_started',
-          score: 0,
-        });
-        await progress.save();
-      }
-  
-     
-      return new ResponseUtil({
-        success: true,
-        message: 'Quiz fetched successfully',
-        data: {
-          title: quiz.title,
-          questions: quiz.questions, 
-          duration: quiz.duration,
-        },
-        statusCode: 200,
-      }, res);
-  
-    } catch (error) {
+  try {
+
+    const lesson = await Lesson.findById(lessonId).populate('quiz');
+    // const lesson = await Lesson.findById(lessonId)
+    // console.log({lesson});
+    
+    if (!lesson) {
       return new ResponseUtil({
         success: false,
-        message: 'Error retrieving quiz',
+        message: 'Lesson not found',
         data: null,
-        statusCode: 500,
-        errors: error,
+        statusCode: 404,
       }, res);
     }
-  }
-  
- 
-async function handleSubmitQuiz(req, res) {
-    const { quizId } = req.params;
-    const { studentId } = req.user;
-    const { answers } = req.body; // answers: { questionId: answer }
-  
-    try {
-      // Step 1: Fetch the quiz to validate its structure
-      const quiz = await Quiz.findById(quizId);
-      if (!quiz) {
-        return new ResponseUtil({
-          success: false,
-          message: 'Quiz not found',
-          data: null,
-          statusCode: 404,
-        }, res);
-      }
-  
-      // Step 2: Find the student's progress
-      let progress = await Progress.findOne({ studentId, quizId });
-      if (!progress) {
-        return new ResponseUtil({
-          success: false,
-          message: 'Student has not started the quiz',
-          data: null,
-          statusCode: 400,
-        }, res);
-      }
-  
-      // Step 3: Calculate the score based on the student's answers
-      let score = 0;
-      const correctAnswers = quiz.questions.map(q => q.correctAnswer);
-      const totalQuestions = quiz.questions.length;
-  
-      // Compare the student's answers with the correct answers
-      quiz.questions.forEach((question, index) => {
-        if (answers[question._id] === correctAnswers[index]) {
-          score++;
-        }
+
+
+    let progress = await Progress.findOne({ studentId, lessonId });
+
+
+    if (!progress) {
+      progress = new Progress({
+        studentId,
+        lessonId,
+        score: 0,
+        status: 'not_started',
       });
-  
-      // Step 4: Update the student's progress with their score
-      progress.score = score;
-      progress.status = score >= quiz.passThreshold ? 'completed' : 'in_progress';
       await progress.save();
-  
-      // Step 5: Return the results to the student
-      return new ResponseUtil({
-        success: true,
-        message: 'Quiz submitted successfully',
-        data: {
-          score,
-          totalQuestions,
-          status: progress.status,
-          passThreshold: quiz.passThreshold,
-        },
-        statusCode: 200,
-      }, res);
-  
-    } catch (error) {
+    }
+
+
+    return new ResponseUtil({
+      success: true,
+      message: 'Lesson and quizzes fetched successfully',
+      data: {
+        lessonTitle: lesson.title,
+        lessonContent: lesson.content,
+        quizzes: lesson.quiz,
+        progressStatus: progress.status,
+      },
+      statusCode: 200,
+    }, res);
+
+
+
+  } catch (error) {
+    console.log(error)
+    return new ResponseUtil({
+      success: false,
+      message: 'Error retrieving quiz',
+      data: null,
+      statusCode: 500,
+      errors: error,
+    }, res);
+  }
+}
+
+
+async function handleSubmitQuiz(req, res) {
+  const { lessonId } = req.params;
+  const { answers, studentId } = req.body;
+
+  try {
+ 
+    const lesson = await Lesson.findById(lessonId).populate('quiz');
+
+    if (!lesson) {
       return new ResponseUtil({
         success: false,
-        message: 'Error submitting quiz',
+        message: 'Lesson not found',
         data: null,
-        statusCode: 500,
-        errors: error,
+        statusCode: 404,
       }, res);
     }
+
+    const quiz = lesson.quiz[0]; 
+
+    if (!quiz) {
+      return new ResponseUtil({
+        success: false,
+        message: 'Quiz not found for this lesson',
+        data: null,
+        statusCode: 404,
+      }, res);
+    }
+
+    
+    let progress = await Progress.findOne({ studentId, quizId: quiz._id });
+
+    if (!progress) {
+    
+      progress = new Progress({
+        studentId,
+        quizId: quiz._id,
+        lessonId,
+        score: 0,
+        status: 'not_started',  
+      });
+      await progress.save();
+    }
+
+    let score = 0;
+    const totalQuestions = quiz.questions.length;
+
+   
+    quiz.questions.forEach((question) => {
+      if (answers[question._id] === question.correctAnswer) {
+        score++;
+      }
+    });
+
+    const percentageScore = (score / totalQuestions) * 100;
+
+   
+    if (percentageScore >= quiz.passThreshold) {
+      progress.status = 'completed';
+    } else {
+      progress.status = 'in_progress';
+    }
+
+    
+    progress.score = score;
+    await progress.save();
+
+    return new ResponseUtil({
+      success: true,
+      message: 'Quiz submitted successfully',
+      data: {
+        score,
+        totalQuestions,
+        status: progress.status,
+        passThreshold: quiz.passThreshold,
+      },
+      statusCode: 200,
+    }, res);
+
+  } catch (error) {
+    console.error('Error submitting quiz:', error);
+    return new ResponseUtil({
+      success: false,
+      message: 'Error submitting quiz',
+      data: null,
+      statusCode: 500,
+      errors: error.message || error,
+    }, res);
   }
-  
+}
+
 module.exports = {
-    handleStudentDetail,
-    handlePlayQuiz,
-    handleSubmitQuiz
+  handleStudentDetail,
+  handlePlayQuiz,
+  handleSubmitQuiz
 }

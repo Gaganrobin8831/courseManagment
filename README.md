@@ -76,9 +76,13 @@ MONGO_URI=**either a local instance of MongoDBCompass or a MongoDB Atlas cloud d
 
 DB_Name =  **( if using MongoDBCompass else addDbb Name in MONGO_URI with cluster connection String)**
 
-SOCKET_IO_CORS_ORIGIN = ** frontend Url **
+ClOUDINARY_API_KEY =  **Api key of cloudinary after createing account in Cloudinary**
 
-SOCKET_IO_MAX_CONNECTIONS = **Any Number more than 100**
+ClOUDINARY_API_SECRET = **Secret key of cloudinary after createing account in Cloudinary**
+
+CLOUDINARY_CLOUD_NAME =  **Cloudinary Cloud name after createing account in Cloudinary**
+
+SECRET = **Any Number and stringCombination**
 
 ```
 ------------------------------------------------------------------------------------------------------
@@ -108,13 +112,13 @@ Follow these steps to import the Postman collection:
 
 **1. Download the Postman Collection:**
 
-The Postman collection file (ChatApp.postman_collection.json) is included in the repository.
+The Postman collection file (CourseManagment.postman_collection.json) is included in the repository.
 
 **2. Import the Collection into Postman:**
 
 Open Postman.
 Click on the "Import" button in the top left corner.
-Select the ChatApp.postman_collection.json file from your local machine.
+Select the CourseManagment.postman_collection.json file from your local machine.
 Click "Open" to import the collection.
 
 **3. Start Testing:**

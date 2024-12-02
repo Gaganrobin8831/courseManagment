@@ -1,0 +1,626 @@
+{
+	"info": {
+		"_postman_id": "df83d9d1-f655-4d05-9f1c-a9421d892a53",
+		"name": "CourseManagment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37371656"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"abc3\",\r\n    \"email\": \"abcx3@gmail.com\",\r\n    \"password\": \"abc@1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"admin@gmail.com\",\r\n    \"password\":\"admin@1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "courseCreate",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMzMTEyNDI5LCJleHAiOjE3MzMxOTg4Mjl9.1ccFZXL7iYB4-qxWRv-8mZ8ZKRckM82Qfwn7SbqC29g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"BCA\",\r\n    \"description\":\"Computer course Bachelor's of computer application\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/courses",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"courses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "allCourses",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyOTM5NTU0LCJleHAiOjE3MzMwMjU5NTR9.lbsOk9Xkc4Yt7o94R0-HJUXUe6CF66FYqCjtrTSE-MQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5764/api/courses",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"courses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "courseById",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyOTM5NTU0LCJleHAiOjE3MzMwMjU5NTR9.lbsOk9Xkc4Yt7o94R0-HJUXUe6CF66FYqCjtrTSE-MQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5764/api/courses/674a91eb047c6990ebc48b64",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"courses",
+						"674a91eb047c6990ebc48b64"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateCourseById",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyOTM5NTU0LCJleHAiOjE3MzMwMjU5NTR9.lbsOk9Xkc4Yt7o94R0-HJUXUe6CF66FYqCjtrTSE-MQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\":\"A computer course\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/courses/674a91eb047c6990ebc48b64",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"courses",
+						"674a91eb047c6990ebc48b64"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createLesson",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMzMTEyNDI5LCJleHAiOjE3MzMxOTg4Mjl9.1ccFZXL7iYB4-qxWRv-8mZ8ZKRckM82Qfwn7SbqC29g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "Lesson 2",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "Detail of lessson",
+							"type": "text"
+						},
+						{
+							"key": "video",
+							"type": "file",
+							"src": "/C:/Users/pc1/Videos/formshow.mkv"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/C:/Users/pc1/Downloads/pexels-ahmetkurt-13004916.jpg"
+						},
+						{
+							"key": "pdf",
+							"type": "file",
+							"src": [
+								"/C:/Users/pc1/Downloads/MCSA-Reading 5.pdf",
+								"/C:/Users/pc1/Downloads/FILL IN BLANKS READ AND WRITE A - FIBRW3001 - FIBRW3368.pdf"
+							]
+						},
+						{
+							"key": "quiz",
+							"value": "[{ \"questionText\": \"What is 2+2?\", \"options\": [\"3\", \"4\", \"5\"], \"correctAnswer\": \"4\" }]",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/lessons/674d613c1de4218f0a9ff97a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"lessons",
+						"674d613c1de4218f0a9ff97a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createQuiz",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMzMTEyNDI5LCJleHAiOjE3MzMxOTg4Mjl9.1ccFZXL7iYB4-qxWRv-8mZ8ZKRckM82Qfwn7SbqC29g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Quiz 2\",\r\n  \"questions\": [\r\n    {\r\n      \"question\": \"What is the capital of France?\",\r\n      \"options\": [\"Paris\", \"London\", \"Rome\", \"Berlin\"],\r\n      \"correctAnswer\": \"Paris\",\r\n      \"questionType\": \"MCQ\"\r\n    },\r\n    {\r\n      \"question\": \"Is the Earth flat?\",\r\n      \"options\": [\"True\", \"False\"],\r\n      \"correctAnswer\": \"False\",\r\n      \"questionType\": \"True/False\"\r\n    }\r\n  ],\r\n  \"duration\": 30,\r\n  \"passThreshold\": 70\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/quizzes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"quizzes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getQuizs",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMyOTM5NTU0LCJleHAiOjE3MzMwMjU5NTR9.lbsOk9Xkc4Yt7o94R0-HJUXUe6CF66FYqCjtrTSE-MQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5764/api/quizzes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"quizzes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "assignCourses",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMzMTEyNDI5LCJleHAiOjE3MzMxOTg4Mjl9.1ccFZXL7iYB4-qxWRv-8mZ8ZKRckM82Qfwn7SbqC29g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"studentId\" :\"674d3438ff8c5dd76da19b6c\",\r\n    \"courseId\":\"674d613c1de4218f0a9ff97a\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/assign-course",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"assign-course"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getStudentDetail",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"674d3438ff8c5dd76da19b6c\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/studentDetail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"studentDetail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "assign-quiz",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMzMTEyNDI5LCJleHAiOjE3MzMxOTg4Mjl9.1ccFZXL7iYB4-qxWRv-8mZ8ZKRckM82Qfwn7SbqC29g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"lessonId\":\"674d65263016c754daeef3c7\",\r\n    \"quizId\":\"674d5bccaa5900730d3b733a\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/assign-quiz",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"assign-quiz"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "assign-lesson",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMzMTEyNDI5LCJleHAiOjE3MzMxOTg4Mjl9.1ccFZXL7iYB4-qxWRv-8mZ8ZKRckM82Qfwn7SbqC29g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"lessonId\":\"674d65263016c754daeef3c7\", \"courseId\":\"674d613c1de4218f0a9ff97a\" \r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/assign-lesson",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"assign-lesson"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "playQuiz",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"studentId\":\"674d3438ff8c5dd76da19b6c\",\r\n    \"lessonId\":\"674d5f991ff11dbaf682fc23\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/playQuiz/674d5bccaa5900730d3b733a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"playQuiz",
+						"674d5bccaa5900730d3b733a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "submitQuiz",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"answers\": {\r\n    \"674d5bccaa5900730d3b733b\": \"Paris\",  \r\n    \"674d5bccaa5900730d3b733c\": \"False\"   \r\n  },\r\n  \"studentId\": \"674d3438ff8c5dd76da19b6c\"  \r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/submitQuiz/674d5f991ff11dbaf682fc23",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"submitQuiz",
+						"674d5f991ff11dbaf682fc23"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lessonCompletion",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"studentId\":\"674d3438ff8c5dd76da19b6c\",\r\n    \"lessonId\":\"674d65263016c754daeef3c7\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/lessonCompletion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"lessonCompletion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCourseProgress",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDlhMGVlMzc1MmI3MzIwYmY2OTBkYyIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMzMTEyNDI5LCJleHAiOjE3MzMxOTg4Mjl9.1ccFZXL7iYB4-qxWRv-8mZ8ZKRckM82Qfwn7SbqC29g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"studentId\" :\"674d3438ff8c5dd76da19b6c\",\r\n    \"courseId\":\"674d613c1de4218f0a9ff97a\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5764/api/getCourseProgress",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5764",
+					"path": [
+						"api",
+						"getCourseProgress"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

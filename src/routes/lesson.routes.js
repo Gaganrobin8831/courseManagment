@@ -16,7 +16,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const lessonRouter = express.Router();
-
+//create lesson const { title, content } = req.body; using auth and coludinary
 lessonRouter.post('/lessons/:courseId', checkAuth, upload.fields([
   { name: 'video', maxCount: 1 },
   { name: 'image', maxCount: 1 },

@@ -144,7 +144,6 @@ async function handleAssignQuizToLesson(req, res) {
   }
 }
 
-
 async function handleAssignLessonToCourses(req, res) {
   const { lessonId, courseId } = req.body;
   const { role } = req.user;

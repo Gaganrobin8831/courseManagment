@@ -1,3 +1,4 @@
+const { auth } = require('../models/auth.models');
 const { Course } = require('../models/course.models');
 const { Progress } = require('../models/progress.models');
 const ResponseUtil = require('../utility/respone.utility'); 
@@ -55,7 +56,6 @@ async function createCourse(req, res){
   }
 };
 
-
 async function  getAllCourses(req, res)  {
   const {role} = req.user;
 
@@ -80,7 +80,6 @@ async function  getAllCourses(req, res)  {
     );
   }
 };
-
 
  async function getCourseById(req, res)  {
   const { id } = req.params;
@@ -107,7 +106,6 @@ async function  getAllCourses(req, res)  {
     );
   }
 };
-
 
 async function updateCourse(req, res)  {
   const { id } = req.params;
@@ -167,15 +165,15 @@ async function updateCourse(req, res)  {
   }
 };
 
-
- async function deleteCourse(req, res)  {
+async function deleteCourse(req, res) {
   const { id } = req.params;
-  const {role} = req.user;
+  const { role } = req.user;
 
-  if(role != "admin"){
+ 
+  if (role !== "admin") {
     return new ResponseUtil({
       success: false,
-      message: 'Only Admin Can See delete Courses',
+      message: 'Only Admin Can Delete Courses',
       data: null,
       statusCode: 400,
     }, res);
@@ -183,31 +181,39 @@ async function updateCourse(req, res)  {
 
   try {
    
-    if (req.user.role !== 'admin') {
-      return new ResponseUtil(
-        { success: false, message: 'Only admin can delete courses', data: null, statusCode: 403 },
-        res
-      );
-    }
-
     const deletedCourse = await Course.findByIdAndDelete(id);
 
+    
     if (!deletedCourse) {
-      return new ResponseUtil(
-        { success: false, message: 'Course not found', data: null, statusCode: 404 },
-        res
-      );
+      return new ResponseUtil({
+        success: false,
+        message: 'Course not found',
+        data: null,
+        statusCode: 404,
+      }, res);
     }
 
-    return new ResponseUtil(
-      { success: true, message: 'Course deleted successfully', data: deletedCourse, statusCode: 200 },
-      res
+   
+    await auth.updateMany(
+      { Courses: id }, 
+      { $pull: { Courses: id } } 
     );
+
+    return new ResponseUtil({
+      success: true,
+      message: 'Course deleted successfully and removed from students',
+      data: deletedCourse,
+      statusCode: 200,
+    }, res);
+
   } catch (error) {
-    return new ResponseUtil(
-      { success: false, message: 'Error deleting course', data: null, statusCode: 500, errors: error.message },
-      res
-    );
+    return new ResponseUtil({
+      success: false,
+      message: 'Error deleting course',
+      data: null,
+      statusCode: 500,
+      errors: error.message,
+    }, res);
   }
 };
 

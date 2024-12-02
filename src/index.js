@@ -10,6 +10,13 @@ const lessonRouter = require('./routes/lesson.routes')
 const quizRouter = require('./routes/quiz.routes')
 const adminRouter = require('./routes/admin.routes')
 const studentRouter = require('./routes/student.routes')
+
+// require and intilize the swagger and yaml
+const swaggerUi = require('swagger-ui-express')
+const yaml = require('yamljs')
+const swaggerDocument = yaml.load('./swagger.yaml')
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
 app.use(compression())
 
 app.use(express.json())

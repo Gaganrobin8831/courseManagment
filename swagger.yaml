@@ -4,8 +4,8 @@ info:
   description: API for managing admin users and chat functionality
   version: 1.0.0
 servers:
-  - url: http://localhost:5764
-    description: Local development server
+- url: http://localhost:5764
+  description: Local development server
 
 paths:
   /register:
@@ -14,7 +14,7 @@ paths:
       description: "Register a new user with name, email, and password."
       operationId: "handleRegister"
       tags:
-        - "Auth"
+      - "Auth"
       requestBody:
         description: "User information for registration"
         content:
@@ -29,9 +29,9 @@ paths:
                 password:
                   type: string
               required:
-                - name
-                - email
-                - password
+              - name
+              - email
+              - password
       responses:
         '200':
           description: "User registered successfully"
@@ -46,7 +46,7 @@ paths:
       description: "Log in an existing user using email and password."
       operationId: "handleLogin"
       tags:
-        - "Auth"
+      - "Auth"
       requestBody:
         description: "User credentials for login"
         content:
@@ -59,8 +59,8 @@ paths:
                 password:
                   type: string
               required:
-                - email
-                - password
+              - email
+              - password
       responses:
         '200':
           description: "User logged in successfully"
@@ -68,16 +68,16 @@ paths:
           description: "Unauthorized - Invalid credentials"
         '500':
           description: "Internal server error"
-          
+
   /logout:
     post:
       summary: "User logout"
       description: "Log out a user by invalidating their JWT token."
       operationId: "handleLogout"
       tags:
-        - "Auth"
+      - "Auth"
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       responses:
         '200':
           description: "User logged out successfully"
@@ -85,14 +85,14 @@ paths:
           description: "Unauthorized - Invalid token"
         '500':
           description: "Internal server error"
-          
+
   /assign-course:
     post:
       summary: "Assign course to student"
       description: "Assign a course to a student using their studentId and courseId."
       operationId: "handleAssignCourses"
       tags:
-        - "Admin"
+      - "Admin"
       requestBody:
         description: "Data for assigning course to student"
         content:
@@ -105,8 +105,8 @@ paths:
                 courseId:
                   type: string
               required:
-                - studentId
-                - courseId
+              - studentId
+              - courseId
       responses:
         '200':
           description: "Course assigned to student successfully"
@@ -123,7 +123,7 @@ paths:
       description: "Assign a lesson to a course using lessonId and courseId."
       operationId: "handleAssignLessonToCourses"
       tags:
-        - "Admin"
+      - "Admin"
       requestBody:
         description: "Data for assigning lesson to course"
         content:
@@ -136,8 +136,8 @@ paths:
                 courseId:
                   type: string
               required:
-                - lessonId
-                - courseId
+              - lessonId
+              - courseId
       responses:
         '200':
           description: "Lesson assigned to course successfully"
@@ -154,7 +154,7 @@ paths:
       description: "Assign a quiz to a lesson using lessonId and quizId."
       operationId: "handleAssignQuizToLesson"
       tags:
-        - "Admin"
+      - "Admin"
       requestBody:
         description: "Data for assigning quiz to lesson"
         content:
@@ -167,8 +167,8 @@ paths:
                 quizId:
                   type: string
               required:
-                - lessonId
-                - quizId
+              - lessonId
+              - quizId
       responses:
         '200':
           description: "Quiz assigned to lesson successfully"
@@ -178,16 +178,16 @@ paths:
           description: "Unauthorized"
         '500':
           description: "Internal server error"
-          
+
   /admin/reports:
     get:
       summary: "Generate reports for all students"
       description: "Generate a report for all students."
       operationId: "handleGetReportsStudents"
       tags:
-        - "Admin"
+      - "Admin"
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       responses:
         '200':
           description: "Report generated successfully"
@@ -202,7 +202,7 @@ paths:
       description: "Create a course using name and description."
       operationId: "createCourse"
       tags:
-        - "Course"
+      - "Course"
       requestBody:
         description: "Course information for creation"
         content:
@@ -215,8 +215,8 @@ paths:
                 description:
                   type: string
               required:
-                - name
-                - description
+              - name
+              - description
       responses:
         '200':
           description: "Course created successfully"
@@ -233,7 +233,7 @@ paths:
       description: "Get the progress of a course for a student using studentId and courseId."
       operationId: "getCourseProgress"
       tags:
-        - "Course"
+      - "Course"
       requestBody:
         description: "Data for retrieving course progress"
         content:
@@ -246,8 +246,8 @@ paths:
                 courseId:
                   type: string
               required:
-                - studentId
-                - courseId
+              - studentId
+              - courseId
       responses:
         '200':
           description: "Course progress retrieved successfully"
@@ -264,14 +264,14 @@ paths:
       description: "Get details of a course by its ID."
       operationId: "getCourseById"
       tags:
-        - "Course"
+      - "Course"
       parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID of the course"
-          schema:
-            type: string
+      - in: path
+        name: id
+        required: true
+        description: "ID of the course"
+        schema:
+          type: string
       responses:
         '200':
           description: "Course details retrieved successfully"
@@ -287,14 +287,14 @@ paths:
       description: "Update a course's details using its ID and new data."
       operationId: "updateCourse"
       tags:
-        - "Course"
+      - "Course"
       parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID of the course"
-          schema:
-            type: string
+      - in: path
+        name: id
+        required: true
+        description: "ID of the course"
+        schema:
+          type: string
       requestBody:
         description: "Data for updating the course"
         content:
@@ -305,7 +305,7 @@ paths:
                 description:
                   type: string
               required:
-                - description
+              - description
       responses:
         '200':
           description: "Course updated successfully"
@@ -323,14 +323,14 @@ paths:
       description: "Delete a course using its ID."
       operationId: "deleteCourse"
       tags:
-        - "Course"
+      - "Course"
       parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID of the course"
-          schema:
-            type: string
+      - in: path
+        name: id
+        required: true
+        description: "ID of the course"
+        schema:
+          type: string
       responses:
         '200':
           description: "Course deleted successfully"
@@ -343,20 +343,241 @@ paths:
         '500':
           description: "Internal server error"
 
+    /quizzes:
+    post:
+      summary: "Create a new quiz"
+      description: "Create a quiz with title, questions, duration, and pass threshold."
+      operationId: "handleCreateQuiz"
+      tags:
+      - "Quiz"
+      requestBody:
+        description: "Quiz data"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                questions:
+                  type: array
+                  items:
+                    type: string
+                duration:
+                  type: integer
+                passThreshold:
+                  type: integer
+              required:
+              - title
+              - questions
+              - duration
+              - passThreshold
+      responses:
+        '200':
+          description: "Quiz created successfully"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "Internal server error"
+
+  /quizzes/{id}:
+    get:
+      summary: "Get all quizzes"
+      description: "Get all quizzes."
+      operationId: "handleGetQuiz"
+      tags:
+      - "Quiz"
+      responses:
+        '200':
+          description: "All quizzes retrieved successfully"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "Internal server error"
+
+    put:
+      summary: "Update a quiz"
+      description: "Update a quiz using its ID."
+      operationId: "handleEditQuiz"
+      tags:
+      - "Quiz"
+      parameters:
+      - in: path
+        name: id
+        required: true
+        description: "ID of the quiz"
+        schema:
+          type: string
+      requestBody:
+        description: "Data for updating the quiz"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                questions:
+                  type: array
+                  items:
+                    type: string
+                duration:
+                  type: integer
+                passThreshold:
+                  type: integer
+              required:
+              - questions
+              - duration
+              - passThreshold
+      responses:
+        '200':
+          description: "Quiz updated successfully"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '404':
+          description: "Quiz not found"
+        '500':
+          description: "Internal server error"
+
+    delete:
+      summary: "Delete a quiz"
+      description: "Delete a quiz using its ID and remove it from all lessons."
+      operationId: "handleDeleteQuiz"
+      tags:
+      - "Quiz"
+      parameters:
+      - in: path
+        name: id
+        required: true
+        description: "ID of the quiz"
+        schema:
+          type: string
+      responses:
+        '200':
+          description: "Quiz deleted successfully"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '404':
+          description: "Quiz not found"
+        '500':
+          description: "Internal server error"
+
+  /studentDetail:
+    get:
+      summary: "Get student details"
+      description: "Get full details of the student using their ID."
+      operationId: "handleStudentDetail"
+      tags:
+      - "Student"
+      responses:
+        '200':
+          description: "Student details retrieved successfully"
+        '400':
+          description: "Bad request"
+        '404':
+          description: "Student not found"
+        '500':
+          description: "Internal server error"
+
+  /playQuiz/{quizId}:
+    post:
+      summary: "Start a quiz"
+      description: "Play a quiz for the given quizId."
+      operationId: "handlePlayQuiz"
+      tags:
+      - "Student"
+      parameters:
+      - in: path
+        name: quizId
+        required: true
+        description: "ID of the quiz"
+        schema:
+          type: string
+      responses:
+        '200':
+          description: "Quiz played successfully"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "Internal server error"
+
+  /submitQuiz/{lessonId}:
+    post:
+      summary: "Submit a quiz"
+      description: "Submit answers for a quiz given the lessonId and studentId."
+      operationId: "handleSubmitQuiz"
+      tags:
+      - "Student"
+      parameters:
+      - in: path
+        name: lessonId
+        required: true
+        description: "ID of the lesson"
+        schema:
+          type: string
+      requestBody:
+        description: "Answers and student data for quiz submission"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answers:
+                  type: array
+                  items:
+                    type: string
+                studentId:
+                  type: string
+              required:
+              - answers
+              - studentId
+      responses:
+        '200':
+          description: "Quiz submitted successfully"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "Internal server error"
+
+  /lessonCompletion:
+    get:
+      summary: "Get lesson completion progress"
+      description: "Get the completion status of a lesson for a student."
+      operationId: "getLessonCompletion"
+      tags:
+      - "Student"
+      responses:
+        '200':
+          description: "Lesson completion retrieved successfully"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "Internal server error"
+
   /lessons/{courseId}:
     post:
       summary: "Create a new lesson"
       description: "Create a new lesson for a course using title, content, and optional files (video, image, PDF) via Cloudinary."
-      operationId: "handleCreateLessaon"
+      operationId: "handleCreateLesson"
       tags:
-        - "Lesson"
+      - "Lesson"
       parameters:
-        - in: path
-          name: courseId
-          required: true
-          description: "ID of the course to assign the lesson"
-          schema:
-            type: string
+      - in: path
+        name: courseId
+        required: true
+        description: "ID of the course to assign the lesson"
+        schema:
+          type: string
       requestBody:
         description: "Lesson information for creation"
         content:
@@ -377,240 +598,13 @@ paths:
                 pdf:
                   type: string
                   format: binary
-              required:
-                - title
-                - content
       responses:
         '200':
           description: "Lesson created successfully"
         '400':
           description: "Bad request"
-        '401':
-          description: "Unauthorized"
         '500':
           description: "Internal server error"
-          
-  /quizzes:
-    post:
-      summary: "Create a new quiz"
-      description: "Create a quiz with title, questions, duration, and pass threshold."
-      operationId: "handleCreateQuiz"
-      tags:
-        - "Quiz"
-      requestBody:
-        description: "Quiz data"
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                questions:
-                  type: array
-                  items:
-                    type: string
-                duration:
-                  type: integer
-                passThreshold:
-                  type: integer
-              required:
-                - title
-                - questions
-                - duration
-                - passThreshold
-      responses:
-        '200':
-          description: "Quiz created successfully"
-        '400':
-          description: "Bad request"
-        '401':
-          description: "Unauthorized"
-        '500':
-          description: "Internal server error"
-
-  /quizzes/{id}:
-    get:
-      summary: "Get all quizzes"
-      description: "Get all quizzes."
-      operationId: "handleGetQuiz"
-      tags:
-        - "Quiz"
-      responses:
-        '200':
-          description: "All quizzes retrieved successfully"
-        '401':
-          description: "Unauthorized"
-        '500':
-          description: "Internal server error"
-
-    put:
-      summary: "Update a quiz"
-      description: "Update a quiz using its ID."
-      operationId: "handleEditQuiz"
-      tags:
-        - "Quiz"
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID of the quiz"
-          schema:
-            type: string
-      requestBody:
-        description: "Data for updating the quiz"
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                questions:
-                  type: array
-                  items:
-                    type: string
-                duration:
-                  type: integer
-                passThreshold:
-                  type: integer
-              required:
-                - questions
-                - duration
-                - passThreshold
-      responses:
-        '200':
-          description: "Quiz updated successfully"
-        '400':
-          description: "Bad request"
-        '401':
-          description: "Unauthorized"
-        '404':
-          description: "Quiz not found"
-        '500':
-          description: "Internal server error"
-
-    delete:
-      summary: "Delete a quiz"
-      description: "Delete a quiz using its ID and remove it from all lessons."
-      operationId: "handleDeleteQuiz"
-      tags:
-        - "Quiz"
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: "ID of the quiz"
-          schema:
-            type: string
-      responses:
-        '200':
-          description: "Quiz deleted successfully"
-        '400':
-          description: "Bad request"
-        '401':
-          description: "Unauthorized"
-        '404':
-          description: "Quiz not found"
-        '500':
-          description: "Internal server error"
-
-  /studentDetail:
-    get:
-      summary: "Get student details"
-      description: "Get full details of the student using their ID."
-      operationId: "handleStudentDetail"
-      tags:
-        - "Student"
-      responses:
-        '200':
-          description: "Student details retrieved successfully"
-        '400':
-          description: "Bad request"
-        '404':
-          description: "Student not found"
-        '500':
-          description: "Internal server error"
-
-  /playQuiz/{quizId}:
-    post:
-      summary: "Start a quiz"
-      description: "Play a quiz for the given quizId."
-      operationId: "handlePlayQuiz"
-      tags:
-        - "Student"
-      parameters:
-        - in: path
-          name: quizId
-          required: true
-          description: "ID of the quiz"
-          schema:
-            type: string
-      responses:
-        '200':
-          description: "Quiz played successfully"
-        '400':
-          description: "Bad request"
-        '401':
-          description: "Unauthorized"
-        '500':
-          description: "Internal server error"
-
-  /submitQuiz/{lessonId}:
-    post:
-      summary: "Submit a quiz"
-      description: "Submit answers for a quiz given the lessonId and studentId."
-      operationId: "handleSubmitQuiz"
-      tags:
-        - "Student"
-      parameters:
-        - in: path
-          name: lessonId
-          required: true
-          description: "ID of the lesson"
-          schema:
-            type: string
-      requestBody:
-        description: "Answers and student data for quiz submission"
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                answers:
-                  type: array
-                  items:
-                    type: string
-                studentId:
-                  type: string
-              required:
-                - answers
-                - studentId
-      responses:
-        '200':
-          description: "Quiz submitted successfully"
-        '400':
-          description: "Bad request"
-        '401':
-          description: "Unauthorized"
-        '500':
-          description: "Internal server error"
-
-  /lessonCompletion:
-    get:
-      summary: "Get lesson completion progress"
-      description: "Get the completion status of a lesson for a student."
-      operationId: "getLessonCompletion"
-      tags:
-        - "Student"
-      responses:
-        '200':
-          description: "Lesson completion retrieved successfully"
-        '400':
-          description: "Bad request"
-        '401':
-          description: "Unauthorized"
-        '500':
-          description: "Internal server error"
-
 
 components:
   securitySchemes:
@@ -619,59 +613,131 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-  models:
-  auth:
-    type: "mongoose.Schema"
-    properties:
-      name:
-        type: "String"
-        required: true
-      email:
-        type: "String"
-        required: true
-      password:
-        type: "String"
-        required: true
-      token:
-        type: "String"
-        default: null
-      role:
-        type: "String"
-        enum: ['student', 'admin']
-        default: 'student'
-      Courses:
-        type: "Array"
-        items:
-          type: "mongoose.Schema.Types.ObjectId"
-          ref: 'Course'
-    timestamps: true
-    description: |
-      This schema defines the user model for authentication, including fields for user details (name, email, password), 
-      role-based access control (role), and the courses associated with the user (Courses).
-    modelName: "student"
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        token:
+          type: string
+        role:  
+          type: String,
+          enum: ['student','admin']
+        Courses:
+          type: array,
+          items:
+            type: string
+            format: ObjectId
+      required:
+      - name
+      - email
+      - password
 
-  course:
-    type: "mongoose.Schema"
-    properties:
-      name:
-        type: "String"
-        required: true
-        unique: true
-      description:
-        type: "String"
-        required: true
-      lessons:
-        type: "Array"
-        items:
-          type: "mongoose.Schema.Types.ObjectId"
-          ref: 'Lesson'
-      createdBy:
-        type: "mongoose.Schema.Types.ObjectId"
-        ref: 'User'
-        required: true
-    timestamps: true
-    description: |
-      This schema defines the course model, including the course name, description, lessons associated with the course, 
-      and the user who created it (createdBy). Each course has a list of lessons, and the `createdBy` field is a reference 
-      to the user who created the course.
-    modelName: "Course"
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        lessons:
+          type: array
+          items:
+            type: string
+            format: ObjectId
+        createdBy:
+          type: array
+          items:
+            type: string
+            format: ObjectId    
+      required:
+      - id
+      - name
+      - description
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        video:
+          type: string
+        image:
+          type: string
+        pdf:
+          type: string
+        quiz:
+          type: array
+          items:
+            type: string
+            format: ObjectId
+        courseId:
+          type: string
+      required:
+      - id
+      - title
+      - content
+
+    Quiz:
+      type: object
+      properties:
+        title:
+          type: string
+        questions:
+          type: array
+          items:
+            type: object
+            properties:
+              question:
+                type: string
+              options:
+                type: array
+                items:
+                  type: string
+              correctAnswer:
+                type: string
+              questionType:
+                type: string
+                enum: [ "MCQ", "True/False" ]
+        duration:
+          type: number
+        passThreshold:
+          type: number
+      required:
+      - title
+      - questions
+      - duration
+      - passThreshold
+
+    Progress:
+      type: object
+      properties:
+        studentId:
+          type: string
+          format: ObjectId
+        lessonId:
+          type: string
+          format: ObjectId
+        quizId:
+          type: string
+          format: ObjectId
+        status:
+          type: string
+          enum: [ "not_started", "in_progress", "completed" ]
+        score:
+          type: number
+      required:
+      - studentId
+      - lessonId
+      - quizId

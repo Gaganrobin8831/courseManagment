@@ -30,6 +30,7 @@ Correct answers for automated scoring.
 4. Assigning Courses to Students
 Admin can assign one or more courses to a student.
 Track each student’s assigned courses.
+
 5. Lesson and Course Access for Students
 Students can view lessons of their assigned courses.
 Each lesson includes its respective metadata (videos, photos, PDFs, and quizzes).
@@ -60,7 +61,7 @@ Follow these steps to set up and run the project locally:
 
 ## Clone the repository:
 ```
-git clone https://github.com/Gaganrobin8831/ChatAppGagan
+git clone https://github.com/Gaganrobin8831/ChatAppGagan/tree/main
 ```
 ## Install dependencies:
 ```

@@ -4,6 +4,16 @@ const ResponseUtil = require('../utility/respone.utility');
 
 async function handleCreateQuiz(req,res) {
     const { title, questions, duration, passThreshold } = req.body;
+    const {role} = req.user;
+
+    if(role != "admin"){
+      return new ResponseUtil({
+        success: false,
+        message: 'Only Admin Can Create Quizes',
+        data: null,
+        statusCode: 400,
+      }, res);
+    }
 
     try {
       const quiz = await Quiz.findOne({title})
@@ -65,6 +75,16 @@ async function handleGetQuiz(req,res) {
 async function handleEditQuiz(req,res) {
     const { id } = req.params;
     const { questions, duration, passThreshold } = req.body;
+    const {role} = req.user;
+
+    if(role != "admin"){
+      return new ResponseUtil({
+        success: false,
+        message: 'Only Admin Can Update Quizes',
+        data: null,
+        statusCode: 400,
+      }, res);
+    }
   
     try {
       const updatedQuiz = await Quiz.findByIdAndUpdate(id, {
@@ -101,6 +121,16 @@ async function handleEditQuiz(req,res) {
 
 async function handleDeleteQuiz(req,res) {
     const { id } = req.params;
+    const {role} = req.user;
+
+    if(role != "admin"){
+      return new ResponseUtil({
+        success: false,
+        message: 'Only Admin Can Delete Quizes',
+        data: null,
+        statusCode: 400,
+      }, res);
+    }
 
     try {
       

@@ -5,6 +5,16 @@ const ResponseUtil = require('../utility/respone.utility');
 async function createCourse(req, res){
   const { name, description } = req.body;
   // console.log({ name, description })
+  const {role} = req.user;
+
+  if(role != "admin"){
+    return new ResponseUtil({
+      success: false,
+      message: 'Only Admin Can Create Courses',
+      data: null,
+      statusCode: 400,
+    }, res);
+  }
   try {
 
     if (req.user.role !== 'admin') {
@@ -46,6 +56,16 @@ async function createCourse(req, res){
 
 
 async function  getAllCourses(req, res)  {
+  const {role} = req.user;
+
+  if(role != "admin"){
+    return new ResponseUtil({
+      success: false,
+      message: 'Only Admin Can See All Courses Detail',
+      data: null,
+      statusCode: 400,
+    }, res);
+  }
   try {
     const courses = await Course.find({}).populate('lessons', 'title content video image pdf quiz') 
     return new ResponseUtil(
@@ -91,6 +111,16 @@ async function  getAllCourses(req, res)  {
 async function updateCourse(req, res)  {
   const { id } = req.params;
   const { description } = req.body; 
+  const {role} = req.user;
+
+  if(role != "admin"){
+    return new ResponseUtil({
+      success: false,
+      message: 'Only Admin Can See Update Courses',
+      data: null,
+      statusCode: 400,
+    }, res);
+  }
   try {
     
     if (req.user.role !== 'admin') {
@@ -139,6 +169,16 @@ async function updateCourse(req, res)  {
 
  async function deleteCourse(req, res)  {
   const { id } = req.params;
+  const {role} = req.user;
+
+  if(role != "admin"){
+    return new ResponseUtil({
+      success: false,
+      message: 'Only Admin Can See delete Courses',
+      data: null,
+      statusCode: 400,
+    }, res);
+  }
 
   try {
    

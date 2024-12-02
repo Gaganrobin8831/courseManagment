@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { Course } = require('../models/course.models'); 
 
 const authSchema = new mongoose.Schema({
     name:{
@@ -24,7 +25,7 @@ const authSchema = new mongoose.Schema({
     },
     Courses : [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'courses'
+        ref: 'Course'
     }]
 },{timestamps:true})
 

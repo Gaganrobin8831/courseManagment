@@ -10,6 +10,16 @@ async function handleCreateLessaon(req,res) {
   
         const { title, content } = req.body;
         const courseId = req.params.courseId;
+        const {role} = req.user;
+
+        if(role != "admin"){
+          return new ResponseUtil({
+            success: false,
+            message: 'Only Admin Can Create Lessons',
+            data: null,
+            statusCode: 400,
+          }, res);
+        }
       
         if (!title || !content) {
           return new ResponseUtil({
@@ -100,7 +110,7 @@ async function handleCreateLessaon(req,res) {
             });
           }
       
-         
+         console.log(result.videoUrl,result.imageUrl,result.pdfUrl)
           const lessonData = {
             title,
             content,

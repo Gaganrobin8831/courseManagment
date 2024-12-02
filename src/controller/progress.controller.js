@@ -34,7 +34,7 @@ async function getLessonCompletion(req, res) {
     }
 
     const progress = await Progress.find({ studentId, lessonId }).populate('quizId');
-   console.log({progress})
+  //  console.log({progress})
     const completedQuizzes = progress.filter(p => p.status === 'completed').length;
 
 

@@ -28,7 +28,7 @@ async function handleStudentDetail(req, res) {
     }, res);
 
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return new ResponseUtil({
       success: false,
       message: 'Internal server error',
@@ -88,7 +88,7 @@ async function handlePlayQuiz(req, res) {
 
 
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     return new ResponseUtil({
       success: false,
       message: 'Internal server error',
@@ -178,7 +178,7 @@ async function handleSubmitQuiz(req, res) {
     }, res);
 
   } catch (error) {
-    console.error('Error submitting quiz:', error);
+    // console.error('Error submitting quiz:', error);
     return new ResponseUtil({
       success: false,
       message: 'Error submitting quiz',

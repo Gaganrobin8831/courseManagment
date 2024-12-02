@@ -3,7 +3,7 @@ const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const { checkAuth } = require('../middleware/auth.middleware');
 const { handleCreateLessaon } = require('../controller/lesson.controller');
-
+const lessonRouter = express.Router();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -11,12 +11,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const lessonRouter = express.Router();
-//create lesson const { title, content } = req.body; using auth and coludinary
 lessonRouter.post('/lessons/:courseId', checkAuth, upload.fields([
   { name: 'video', maxCount: 1 },
   { name: 'image', maxCount: 1 },

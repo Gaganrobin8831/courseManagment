@@ -67,7 +67,7 @@ async function handleRegister(req, res) {
         }, res);
 
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return new ResponseUtil({
             success: false,
             message: 'Error Occurred',
@@ -122,7 +122,7 @@ async function handleLogin(req, res) {
         }, res)
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return new ResponseUtil({
             success: false,
             message: 'Error Occurred',

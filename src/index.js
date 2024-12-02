@@ -18,7 +18,6 @@ const swaggerDocument = yaml.load('./swagger.yaml')
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(compression())
-
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
@@ -28,7 +27,6 @@ app.use('/api',lessonRouter)
 app.use('/api',quizRouter)
 app.use('/api',adminRouter)
 app.use('/api',studentRouter)
-
 
 
 connectDB()

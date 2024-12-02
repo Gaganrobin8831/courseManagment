@@ -175,7 +175,7 @@ async function handleAssignLessonToCourses(req, res) {
       course.lessons.push(lessonId);
       await Course.findByIdAndUpdate(courseId, { lessons: course.lessons });
 
-      console.log("lessonId, course");
+      // console.log("lessonId, course");
 
       return new ResponseUtil({
         success: true,
@@ -188,7 +188,7 @@ async function handleAssignLessonToCourses(req, res) {
 
 
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     return new ResponseUtil({
       success: false,
       message: 'Error assigning lesson',

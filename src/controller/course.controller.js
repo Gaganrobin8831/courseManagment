@@ -18,14 +18,6 @@ async function createCourse(req, res){
     }, res);
   }
   try {
-
-    if (req.user.role !== 'admin') {
-      return new ResponseUtil(
-        { success: false, message: 'Only admin can create courses', data: null, statusCode: 400 },
-        res
-      );
-    }
-
     const courseDetail = await Course.findOne({name})
     
     if (courseDetail) {
@@ -48,7 +40,7 @@ async function createCourse(req, res){
       res
     );
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     return new ResponseUtil(
       { success: false, message: 'Error creating course', data: null, statusCode: 500, errors: error.message },
       res

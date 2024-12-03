@@ -4,31 +4,36 @@ const { Progress } = require('../models/progress.models');
 const Quiz = require('../models/quiz.models');
 const ResponseUtil = require('../utility/respone.utility');
 
-async function handleStudentDetail(req, res) {
-  // const {id} = req.user
-  const { id } = req.body
+async function handlequestionDetail(req, res) {
+  const { id } = req.body;
   try {
-
-    const student = await auth
-      .findOne({ _id: id })
+   
+    const student = await auth.findOne({ _id: id })
       .select("name _id email")
       .populate({
-        path: 'Courses',
+        path: 'Courses', 
         populate: {
-          path: 'lessons',
+          path: 'lessons', 
           model: 'Lesson',
+          populate: {
+            path: 'quiz',
+            model: 'Quiz',
+            populate: {
+              path: 'questions', 
+              model: 'Question'
+            }
+          }
         }
       });
+
     return new ResponseUtil({
       success: true,
-      message: 'Successfully',
-      data: student,
+      message: 'Successfully fetched question details',
+      data: question,
       statusCode: 200,
-
     }, res);
 
   } catch (error) {
-    // console.error(error);
     return new ResponseUtil({
       success: false,
       message: 'Internal server error',
@@ -40,15 +45,19 @@ async function handleStudentDetail(req, res) {
 }
 
 async function handlePlayQuiz(req, res) {
-  // const { quizId } = req.params;
-  const { studentId, lessonId } = req.body;
+  const { questionId, lessonId } = req.body;
 
   try {
-
-    const lesson = await Lesson.findById(lessonId).populate('quiz');
-    // const lesson = await Lesson.findById(lessonId)
-    // console.log({lesson});
     
+    const lesson = await Lesson.findById(lessonId).populate({
+      path: 'quiz', 
+      model: 'Quiz',
+      populate: {
+        path: 'questions', 
+        model: 'Question'
+      }
+    });
+
     if (!lesson) {
       return new ResponseUtil({
         success: false,
@@ -58,13 +67,12 @@ async function handlePlayQuiz(req, res) {
       }, res);
     }
 
-
-    let progress = await Progress.findOne({ studentId, lessonId });
-
+  
+    let progress = await Progress.findOne({ questionId, lessonId });
 
     if (!progress) {
       progress = new Progress({
-        studentId,
+        questionId,
         lessonId,
         score: 0,
         status: 'not_started',
@@ -72,40 +80,43 @@ async function handlePlayQuiz(req, res) {
       await progress.save();
     }
 
-
     return new ResponseUtil({
       success: true,
-      message: 'Lesson and quizzes fetched and create progress successfully',
+      message: 'Lesson and quizzes fetched, and progress created successfully',
       data: {
         lessonTitle: lesson.title,
         lessonContent: lesson.content,
-        quizzes: lesson.quiz,
+        quizzes: lesson.quiz, 
         progressStatus: progress.status,
       },
       statusCode: 200,
     }, res);
 
-
-
   } catch (error) {
-    // console.log(error)
     return new ResponseUtil({
       success: false,
       message: 'Internal server error',
       data: null,
       statusCode: 500,
-      errors: error,
+      errors: error.message || error,
     }, res);
   }
 }
 
 async function handleSubmitQuiz(req, res) {
   const { lessonId } = req.params;
-  const { answers, studentId } = req.body;
+  const { answers, questionId } = req.body;
 
   try {
- 
-    const lesson = await Lesson.findById(lessonId).populate('quiz');
+  
+    const lesson = await Lesson.findById(lessonId).populate({
+      path: 'quiz',
+      model: 'Quiz',
+      populate: {
+        path: 'questions', 
+        model: 'Question'
+      }
+    });
 
     if (!lesson) {
       return new ResponseUtil({
@@ -128,16 +139,15 @@ async function handleSubmitQuiz(req, res) {
     }
 
     
-    let progress = await Progress.findOne({ studentId, quizId: quiz._id });
+    let progress = await Progress.findOne({ questionId, quizId: quiz._id, lessonId });
 
     if (!progress) {
-    
       progress = new Progress({
-        studentId,
+        questionId,
         quizId: quiz._id,
         lessonId,
         score: 0,
-        status: 'not_started',  
+        status: 'not_started',
       });
       await progress.save();
     }
@@ -145,7 +155,6 @@ async function handleSubmitQuiz(req, res) {
     let score = 0;
     const totalQuestions = quiz.questions.length;
 
-   
     quiz.questions.forEach((question) => {
       if (answers[question._id] === question.correctAnswer) {
         score++;
@@ -154,14 +163,13 @@ async function handleSubmitQuiz(req, res) {
 
     const percentageScore = (score / totalQuestions) * 100;
 
-   
+  
     if (percentageScore >= quiz.passThreshold) {
       progress.status = 'completed';
     } else {
       progress.status = 'in_progress';
     }
 
-    
     progress.score = score;
     await progress.save();
 
@@ -178,7 +186,6 @@ async function handleSubmitQuiz(req, res) {
     }, res);
 
   } catch (error) {
-    // console.error('Error submitting quiz:', error);
     return new ResponseUtil({
       success: false,
       message: 'Error submitting quiz',
@@ -190,7 +197,7 @@ async function handleSubmitQuiz(req, res) {
 }
 
 module.exports = {
-  handleStudentDetail,
+  handlequestionDetail,
   handlePlayQuiz,
   handleSubmitQuiz
 }

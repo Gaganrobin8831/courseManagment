@@ -10,17 +10,15 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    lessons: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Lesson'
-        }
-    ],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'student',
         required: true
     },
+    studentId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'student',
+    }
 },{timestamps:true});
 
 const Course = mongoose.model('Course', courseSchema);

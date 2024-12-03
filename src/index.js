@@ -10,6 +10,7 @@ const lessonRouter = require('./routes/lesson.routes')
 const quizRouter = require('./routes/quiz.routes')
 const adminRouter = require('./routes/admin.routes')
 const studentRouter = require('./routes/student.routes')
+const questionRouter = require('./routes/question.routes')
 
 // require and intilize the swagger and yaml
 const swaggerUi = require('swagger-ui-express')
@@ -27,6 +28,7 @@ app.use('/api',lessonRouter)
 app.use('/api',quizRouter)
 app.use('/api',adminRouter)
 app.use('/api',studentRouter)
+app.use('/api',questionRouter)
 
 
 connectDB()

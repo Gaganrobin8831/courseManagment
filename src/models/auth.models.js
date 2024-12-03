@@ -23,10 +23,6 @@ const authSchema = new mongoose.Schema({
         enum: ['student','admin'],
         default: 'student'
     },
-    Courses : [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course'
-    }]
 },{timestamps:true})
 
 const auth = mongoose.model("student",authSchema)

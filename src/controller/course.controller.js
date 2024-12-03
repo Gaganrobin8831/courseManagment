@@ -1,13 +1,28 @@
+const { default: mongoose } = require('mongoose');
 const { auth } = require('../models/auth.models');
 const { Course } = require('../models/course.models');
 const { Progress } = require('../models/progress.models');
 const ResponseUtil = require('../utility/respone.utility'); 
+const Lesson = require('../models/lesson.models');
 
+function isValidObjectId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
 
 async function createCourse(req, res){
-  const { name, description } = req.body;
+  
+  const { name, description ,studentId} = req.body;
   // console.log({ name, description })
   const {role} = req.user;
+
+  if (!isValidObjectId(studentId)) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Please Enter Valid studentId.',
+      data: null,
+      statusCode: 400,
+    }, res)
+  }
 
   if(role != "admin"){
     return new ResponseUtil({
@@ -26,11 +41,18 @@ async function createCourse(req, res){
         { success: false, message: 'Course already exists', data: null, statusCode:400 },res
       )
     }
+    const studentDetail = await auth.findOne({studentId})
+    if(!studentDetail){
+      return new ResponseUtil(
+        { success: false, message: 'Student not exists', data: null, statusCode:400 },res
+      )
+    }
 
     const newCourse = new Course({
       name,
       description,
       createdBy: req.user.id,
+     studentId:studentId
     });
 
     await newCourse.save();
@@ -48,39 +70,168 @@ async function createCourse(req, res){
   }
 };
 
-async function  getAllCourses(req, res)  {
-  const {role} = req.user;
+async function getAllCourses(req, res) {
+  const { role } = req.user;
 
-  if(role != "admin"){
-    return new ResponseUtil({
-      success: false,
-      message: 'Only Admin Can See All Courses Detail',
-      data: null,
-      statusCode: 400,
-    }, res);
+  if (role !== "admin") {
+      return new ResponseUtil({
+          success: false,
+          message: 'Only Admin Can See All Courses Detail',
+          data: null,
+          statusCode: 400,
+      }, res);
   }
+
   try {
-    const courses = await Course.find({}).populate('lessons', 'title content video image pdf quiz') 
-    return new ResponseUtil(
-      { success: true, message: 'Courses fetched successfully', data: courses, statusCode: 200 },
-      res
-    );
-  } catch (error) {
-    return new ResponseUtil(
-      { success: false, message: 'Error fetching courses', data: null, statusCode: 500, errors: error.message },
-      res
-    );
-  }
-};
+    
+      const courses = await Course.aggregate([
+          {
+              $lookup: {
+                  from: 'lessons',         
+                  localField: '_id',       
+                  foreignField: 'courseID',  
+                  as: 'lessons'             
+              }
+          },
+          {
+              $unwind: { path: '$lessons', preserveNullAndEmptyArrays: true } 
+          },
+          {
+              $lookup: {
+                  from: 'quizzes',          
+                  localField: 'lessons._id',  
+                  foreignField: 'lessonId',  
+                  as: 'lessons.quizzes'     
+              }
+          },
+          {
+              $unwind: { path: '$lessons.quizzes', preserveNullAndEmptyArrays: true } 
+          },
+          {
+              $lookup: {
+                  from: 'questions',       
+                  localField: 'lessons.quizzes._id',
+                  foreignField: 'quizId',    
+                  as: 'lessons.quizzes.questions' 
+              }
+          },
+          {
+              $project: {
+                  name: 1,
+                  description: 1,
+                  createdBy: 1,
+                  studentId: 1,
+                  lessons: {
+                      title: 1,
+                      content: 1,
+                      video: 1,
+                      image: 1,
+                      pdf: 1,
+                      quizzes: {
+                          title: 1,
+                          duration: 1,
+                          passThreshold: 1,
+                          questions: {
+                              question: 1,
+                              options: 1,
+                              correctAnswer: 1,
+                              questionType: 1
+                          }
+                      }
+                  }
+              }
+          }
+      ]);
 
- async function getCourseById(req, res)  {
+      return new ResponseUtil(
+          { success: true, message: 'Courses with lessons, quizzes, and questions fetched successfully', data: courses, statusCode: 200 },
+          res
+      );
+  } catch (error) {
+      return new ResponseUtil(
+          { success: false, message: 'Error fetching courses with lessons, quizzes, and questions', data: null, statusCode: 500, errors: error.message },
+          res
+      );
+  }
+}
+
+async function getCourseById(req, res) {
   const { id } = req.params;
 
+  if (!isValidObjectId(id)) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Please Enter Valid courseId.',
+      data: null,
+      statusCode: 400,
+    }, res)
+  }
+
   try {
-    const course = await Course.findById(id)
-    .populate('lessons', 'title content video image pdf quiz') 
-     
-    if (!course) {
+   
+    const course = await Course.aggregate([
+      {
+        $match: { _id: mongoose.Types.ObjectId(id) } 
+      },
+      {
+        $lookup: {
+          from: 'lessons',          
+          localField: '_id',        
+          foreignField: 'courseID', 
+          as: 'lessons'              
+        }
+      },
+      {
+        $unwind: { path: '$lessons', preserveNullAndEmptyArrays: true } 
+      },
+      {
+        $lookup: {
+          from: 'quizzes',
+          localField: 'lessons._id', 
+          foreignField: 'lessonId', 
+          as: 'lessons.quizzes' 
+        }
+      },
+      {
+        $unwind: { path: '$lessons.quizzes', preserveNullAndEmptyArrays: true } 
+      },
+      {
+        $lookup: {
+          from: 'questions',      
+          localField: 'lessons.quizzes._id', 
+          foreignField: 'quizId',    
+          as: 'lessons.quizzes.questions' 
+        }
+      },
+      {
+        $project: {
+          name: 1,
+          description: 1,
+          createdBy: 1,
+          studentId: 1,
+          lessons: {
+            title: 1,
+            content: 1,
+            video: 1,
+            image: 1,
+            pdf: 1,
+            quizzes: {
+              title: 1,
+              duration: 1,
+              passThreshold: 1,
+              questions: {
+                question: 1,
+                options: 1,
+                correctAnswer: 1,
+                questionType: 1
+              }
+            }
+          }
+        }
+      }
+    ]);
+
+    if (!course || course.length === 0) {
       return new ResponseUtil(
         { success: false, message: 'Course not found', data: null, statusCode: 404 },
         res
@@ -88,7 +239,7 @@ async function  getAllCourses(req, res)  {
     }
 
     return new ResponseUtil(
-      { success: true, message: 'Course fetched successfully', data: course, statusCode: 200 },
+      { success: true, message: 'Course fetched successfully', data: course[0], statusCode: 200 },
       res
     );
   } catch (error) {
@@ -97,12 +248,21 @@ async function  getAllCourses(req, res)  {
       res
     );
   }
-};
+}
 
 async function updateCourse(req, res)  {
   const { id } = req.params;
   const { description } = req.body; 
   const {role} = req.user;
+
+  if (!isValidObjectId(id)) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Please Enter Valid courseId.',
+      data: null,
+      statusCode: 400,
+    }, res)
+  }
 
   if(role != "admin"){
     return new ResponseUtil({
@@ -146,6 +306,16 @@ async function deleteCourse(req, res) {
   const { role } = req.user;
 
  
+  if (!isValidObjectId(id)) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Please Enter Valid courseId.',
+      data: null,
+      statusCode: 400,
+    }, res);
+  }
+
+ 
   if (role !== "admin") {
     return new ResponseUtil({
       success: false,
@@ -156,10 +326,9 @@ async function deleteCourse(req, res) {
   }
 
   try {
-   
+    
     const deletedCourse = await Course.findByIdAndDelete(id);
 
-    
     if (!deletedCourse) {
       return new ResponseUtil({
         success: false,
@@ -169,15 +338,27 @@ async function deleteCourse(req, res) {
       }, res);
     }
 
-   
-    await auth.updateMany(
-      { Courses: id }, 
-      { $pull: { Courses: id } } 
-    );
+  
+    const lessonsToDelete = await Lesson.find({ courseID: id });
+
+    
+    const lessonIds = lessonsToDelete.map(lesson => lesson._id);
+
+    
+    const deletedQuizzes = await Quiz.deleteMany({
+      lessonId: { $in: lessonIds }
+    });
+
+  
+    await Question.deleteMany({
+      quizId: { $in: deletedQuizzes.map(quiz => quiz._id) } 
+    });
+
+    await Lesson.deleteMany({ courseID: id });
 
     return new ResponseUtil({
       success: true,
-      message: 'Course deleted successfully and removed from students',
+      message: 'Course and all related lessons, quizzes, and questions deleted successfully',
       data: deletedCourse,
       statusCode: 200,
     }, res);
@@ -185,16 +366,25 @@ async function deleteCourse(req, res) {
   } catch (error) {
     return new ResponseUtil({
       success: false,
-      message: 'Error deleting course',
+      message: 'Error deleting course and related data',
       data: null,
       statusCode: 500,
       errors: error.message,
     }, res);
   }
-};
+}
 
 async function getCourseProgress(req, res) {
   const { studentId, courseId } = req.body;
+
+  if (!isValidObjectId(courseId) || !isValidObjectId(studentId)) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Please Enter Valid courseId or studentId.',
+      data: null,
+      statusCode: 400,
+    }, res)
+  }
   try {
     const course = await Course.findById(courseId).populate('lessons');
     

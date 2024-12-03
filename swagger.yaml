@@ -662,134 +662,330 @@ paths:
         '500':
           description: "Internal server error"
 
+  /question:
+    post:
+      summary: Create a new question
+      description: Creates a new question related to a quiz.
+      operationId: createQuestion
+      tags:
+        - Question
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The question to be created.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quizId:
+                  type: string
+                  format: uuid
+                  description: The ID of the quiz to which the question belongs.
+                question:
+                  type: string
+                  description: The question text.
+                options:
+                  type: array
+                  items:
+                    type: string
+                  description: The options for the question.
+                correctAnswer:
+                  type: string
+                  description: The correct answer.
+                questionType:
+                  type: string
+                  enum:
+                    - MCQ
+                    - True/False
+                  description: The type of question.
+      responses:
+        '201':
+          description: Question created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+    get:
+      summary: Get all questions
+      description: Fetch all questions from the database.
+      operationId: getAllQuestions
+      tags:
+        - Question
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of questions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    quizId:
+                      type: string
+                    question:
+                      type: string
+                    options:
+                      type: array
+                      items:
+                        type: string
+                    correctAnswer:
+                      type: string
+                    questionType:
+                      type: string
+        '500':
+          description: Internal server error
+
+  /question/{id}:
+    get:
+      summary: Get a single question by ID
+      description: Fetch a single question by its ID.
+      operationId: getQuestionById
+      tags:
+        - Question
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID of the question
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Question retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quizId:
+                    type: string
+                  question:
+                    type: string
+                  options:
+                    type: array
+                    items:
+                      type: string
+                  correctAnswer:
+                    type: string
+                  questionType:
+                    type: string
+        '404':
+          description: Question not found
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update a question
+      description: Update a question by its ID.
+      operationId: updateQuestion
+      tags:
+        - Question
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID of the question
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Updated question data.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question:
+                  type: string
+                options:
+                  type: array
+                  items:
+                    type: string
+                correctAnswer:
+                  type: string
+                questionType:
+                  type: string
+                  enum:
+                    - MCQ
+                    - True/False
+      responses:
+        '200':
+          description: Question updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+        '400':
+          description: Invalid input
+        '404':
+          description: Question not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a question by ID
+      description: Delete a question by its ID.
+      operationId: deleteQuestion
+      tags:
+        - Question
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID of the question
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Question deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: Question not found
+        '500':
+          description: Internal server error
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
+      
   schemas:
-    User:
-      type: object
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-        token:
-          type: string
-        role:  
-          type: String,
-          enum: ['student','admin']
-        Courses:
-          type: string
-          format: ObjectId
-      required:
-      - name
-      - email
-      - password
-
     Course:
       type: object
       properties:
-        id:
-          type: string
         name:
           type: string
+          description: The name of the course
         description:
           type: string
-        lessons:
-          type: array
-          items:
-            type: string
-            format: ObjectId
+          description: A short description of the course
         createdBy:
           type: string
-          format: ObjectId    
+          format: uuid
+          description: The ID of the student who created the course
+        studentId:
+          type: string
+          format: uuid
+          description: The ID of the student associated with the course
       required:
-      - id
-      - name
-      - description
+        - name
+        - description
+        - createdBy
 
     Lesson:
       type: object
       properties:
-        id:
-          type: string
         title:
           type: string
+          description: The title of the lesson
         content:
           type: string
+          description: The content of the lesson
         video:
           type: string
+          description: URL of the lesson video
         image:
           type: string
+          description: URL of the lesson image
         pdf:
           type: string
-        quiz:
-          type: array
-          items:
-            type: string
-            format: ObjectId
-        courseId:
+          description: URL of the lesson PDF
+        courseID:
           type: string
+          format: uuid
+          description: The ID of the course this lesson belongs to
       required:
-      - id
-      - title
-      - content
+        - title
+        - content
 
     Quiz:
       type: object
       properties:
         title:
           type: string
-        questions:
-          type: array
-          items:
-            type: object
-            properties:
-              question:
-                type: string
-              options:
-                type: array
-                items:
-                  type: string
-              correctAnswer:
-                type: string
-              questionType:
-                type: string
-                enum: [ "MCQ", "True/False" ]
+          description: The title of the quiz
         duration:
-          type: number
+          type: integer
+          description: The duration of the quiz in minutes
         passThreshold:
-          type: number
-      required:
-      - title
-      - questions
-      - duration
-      - passThreshold
-
-    Progress:
-      type: object
-      properties:
-        studentId:
-          type: string
-          format: ObjectId
+          type: integer
+          description: The percentage required to pass the quiz
         lessonId:
           type: string
-          format: ObjectId
+          format: uuid
+          description: The ID of the lesson this quiz belongs to
+      required:
+        - title
+        - duration
+        - passThreshold
+
+    Question:
+      type: object
+      properties:
         quizId:
           type: string
-          format: ObjectId
-        status:
+          format: uuid
+          description: The ID of the quiz to which this question belongs
+        question:
           type: string
-          enum: [ "not_started", "in_progress", "completed" ]
-        score:
-          type: number
+          description: The question text
+        options:
+          type: array
+          items:
+            type: string
+          description: List of answer options
+        correctAnswer:
+          type: string
+          description: The correct answer to the question
+        questionType:
+          type: string
+          enum:
+            - MCQ
+            - True/False
+          description: The type of the question
       required:
-      - studentId
-      - lessonId
-      - quizId
+        - quizId
+        - question
+        - options
+        - correctAnswer
+        - questionType

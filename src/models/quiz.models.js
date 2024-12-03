@@ -5,29 +5,6 @@ const quizSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  questions: [
-    {
-      question: { 
-        type: String, 
-        required: true
-      },
-      options: [
-        {
-          type: String,
-          required: true
-        }
-      ],
-      correctAnswer: {
-        type: String, 
-        required: true
-      },
-      questionType: { 
-        type: String, 
-        enum: ['MCQ', 'True/False'],
-        required: true
-      },
-    }
-  ],
   duration: { 
     type: Number, 
     required: true
@@ -35,7 +12,11 @@ const quizSchema = new mongoose.Schema({
   passThreshold: { 
     type: Number, 
     required: true
-  }, 
+  },
+  lessonId:{
+     type: mongoose.Schema.Types.ObjectId,
+     ref: 'Lesson'
+  }
 }, { timestamps: true });
 
 const Quiz = mongoose.model('quiz', quizSchema);

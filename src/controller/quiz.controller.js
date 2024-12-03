@@ -1,10 +1,26 @@
 const Lesson = require('../models/lesson.models');
+const question = require('../models/question.models');
 const Quiz = require('../models/quiz.models');
 const ResponseUtil = require('../utility/respone.utility');
 
+function isValidObjectId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
+
 async function handleCreateQuiz(req,res) {
-    const { title, questions, duration, passThreshold } = req.body;
+    const { title, lessonId, duration, passThreshold } = req.body;
     const {role} = req.user;
+
+    
+    if (!isValidObjectId(lessonId)) {
+      return new ResponseUtil({
+        success: false,
+        message: 'Please Enter Valid lessonId.',
+        data: null,
+        statusCode: 400,
+      }, res)
+    }
+
 
     if(role != "admin"){
       return new ResponseUtil({
@@ -16,6 +32,17 @@ async function handleCreateQuiz(req,res) {
     }
 
     try {
+
+      const lesonDetail = await Lesson.findOne({lessonId})
+      if(!lesonDetail){
+        return new ResponseUtil({
+          success: false,
+          message: 'Lesson Not Found',
+          data: null,
+          statusCode: 400,
+        },res)
+      }
+      
       const quiz = await Quiz.findOne({title})
       if (quiz) {
         return new ResponseUtil({
@@ -27,9 +54,9 @@ async function handleCreateQuiz(req,res) {
       }
       const newQuiz = new Quiz({
         title,
-        questions,
         duration,
         passThreshold,
+        lessonId
       });
   
       await newQuiz.save();
@@ -51,31 +78,74 @@ async function handleCreateQuiz(req,res) {
     }
 }
 
-async function handleGetQuiz(req,res) {
-    try {
-        const quizzes = await Quiz.find();
-        
-        return new ResponseUtil({
-          success: true,
-          message: 'Quizzes retrieved successfully',
-          data: quizzes,
-          statusCode: 200,
-        }, res);
-      } catch (error) {
-        return new ResponseUtil({
-          success: false,
-          message: 'Error retrieving quizzes',
-          data: null,
-          statusCode: 500,
-          errors: error,
-        }, res);
+async function handleGetQuiz(req, res) {
+  try {
+    const quizzes = await Quiz.aggregate([
+      {
+        $lookup: {
+          from: 'questions',
+          localField: '_id', 
+          foreignField: 'quizId',
+          as: 'questions'
+        }
+      },
+      {
+        $lookup: {
+          from: 'lessons', 
+          localField: 'lessonId', 
+          foreignField: '_id',
+          as: 'lesson' 
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          duration: 1,
+          passThreshold: 1,
+          questions: {
+            question: 1,
+            options: 1,
+            correctAnswer: 1,
+            questionType: 1
+          },
+          lesson: {
+            title: 1,
+            content: 1,
+          }
+        }
       }
+    ]);
+
+    return new ResponseUtil({
+      success: true,
+      message: 'Quizzes retrieved successfully with questions and lesson',
+      data: quizzes,
+      statusCode: 200,
+    }, res);
+  } catch (error) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Error retrieving quizzes',
+      data: null,
+      statusCode: 500,
+      errors: error,
+    }, res);
+  }
 }
 
 async function handleEditQuiz(req,res) {
     const { id } = req.params;
-    const { questions, duration, passThreshold } = req.body;
+    const { duration, passThreshold } = req.body;
     const {role} = req.user;
+
+    if (!isValidObjectId(id)) {
+      return new ResponseUtil({
+        success: false,
+        message: 'Please Enter Valid quiz Id.',
+        data: null,
+        statusCode: 400,
+      }, res)
+    }
 
     if(role != "admin"){
       return new ResponseUtil({
@@ -88,7 +158,6 @@ async function handleEditQuiz(req,res) {
   
     try {
       const updatedQuiz = await Quiz.findByIdAndUpdate(id, {
-        questions,
         duration,
         passThreshold,
       }, { new: true });
@@ -119,54 +188,63 @@ async function handleEditQuiz(req,res) {
     }
 }
 
-async function handleDeleteQuiz(req,res) {
-    const { id } = req.params;
-    const {role} = req.user;
+async function handleDeleteQuiz(req, res) {
+  const { id } = req.params;
+  const { role } = req.user;
 
-    if(role != "admin"){
+  
+  if (!isValidObjectId(id)) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Please Enter Valid quiz Id.',
+      data: null,
+      statusCode: 400,
+    }, res);
+  }
+
+
+  if (role !== "admin") {
+    return new ResponseUtil({
+      success: false,
+      message: 'Only Admin Can Delete Quizzes',
+      data: null,
+      statusCode: 400,
+    }, res);
+  }
+
+  try {
+   
+    const deletedQuiz = await Quiz.findByIdAndDelete(id);
+  
+    if (!deletedQuiz) {
       return new ResponseUtil({
         success: false,
-        message: 'Only Admin Can Delete Quizes',
+        message: 'Quiz not found',
         data: null,
-        statusCode: 400,
+        statusCode: 404,
       }, res);
     }
 
-    try {
-      
-      const deletedQuiz = await Quiz.findByIdAndDelete(id);
   
-      if (!deletedQuiz) {
-        return new ResponseUtil({
-          success: false,
-          message: 'Quiz not found',
-          data: null,
-          statusCode: 404,
-        }, res);
-      }
-  
-      s
-      await Lesson.updateMany(
-        { quiz: id }, 
-        { $set: { quiz: null } } 
-      );
-  
-      return new ResponseUtil({
-        success: true,
-        message: 'Quiz deleted and references removed from lessons successfully',
-        data: null,
-        statusCode: 200,
-      }, res);
-    } catch (error) {
-      return new ResponseUtil({
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        statusCode: 500,
-        errors: error,
-      }, res);
-    } 
+    await question.deleteMany({ quizId: id });
+    return new ResponseUtil({
+      success: true,
+      message: 'Quiz deleted successfully and all related questions and lessons updated',
+      data: null,
+      statusCode: 200,
+    }, res);
+
+  } catch (error) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Internal server error',
+      data: null,
+      statusCode: 500,
+      errors: error.message,
+    }, res);
+  }
 }
+
 
 module.exports = {
     handleCreateQuiz,

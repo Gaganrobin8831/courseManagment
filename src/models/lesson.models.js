@@ -7,7 +7,10 @@ const lessonSchema = new mongoose.Schema({
   video: { type: String, required: false },
   image: { type: String, required: false },
   pdf: { type: String, required: false },
-  quiz: [{ type: mongoose.Schema.Types.ObjectId, ref: 'quiz', default: [] }],  
+  courseID:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course'
+  }
 });
 
 const Lesson = mongoose.model('Lesson', lessonSchema);

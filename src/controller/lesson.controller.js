@@ -136,7 +136,7 @@ async function handleCreateLessaon(req, res) {
     const newLesson = new Lesson(lessonData);
     await newLesson.save();
 
-    course.lessons.push(newLesson._id);
+    course.lessons = newLesson._id
     await course.save();
 
     return new ResponseUtil({

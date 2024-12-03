@@ -1,4 +1,3 @@
-const { default: mongoose } = require('mongoose');
 const { auth } = require('../models/auth.models');
 const { Course } = require('../models/course.models');
 const Lesson = require('../models/lesson.models');
@@ -13,15 +12,7 @@ function isValidObjectId(id) {
 async function handleAssignCourses(req, res) {
   const { studentId, courseId } = req.body;
   const { role } = req.user;
-
-  if (!isValidObjectId(studentId) || !isValidObjectId(courseId) ) {
-    return new ResponseUtil({
-      success: false,
-      message: 'Please Enter Valid studentId or courseId.',
-      data: null,
-      statusCode: 400,
-    }, res)
-  }
+  
 
   try {
     if (role != "admin") {
@@ -44,9 +35,9 @@ async function handleAssignCourses(req, res) {
       }, res);
     }
 
-    if (!student.Courses.includes(courseId)) {
-      student.Courses.push(courseId);
-      await student.save();
+    if (!course.studentIds.includes(studentId)) {
+      course.studentIds.push(studentId);
+      await course.save();
 
       return new ResponseUtil({
         success: true,
@@ -55,6 +46,13 @@ async function handleAssignCourses(req, res) {
         statusCode: 200,
       }, res);
 
+    }else{
+      return new ResponseUtil({
+        success:flase,
+        message: 'Course already assigned',
+        data: null,
+        statusCode: 400,
+      },res)
     }
 
 

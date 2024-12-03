@@ -6,25 +6,23 @@ const ResponseUtil = require('../utility/respone.utility');
 const Lesson = require('../models/lesson.models');
 
 function isValidObjectId(id) {
-  return mongoose.Types.ObjectId.isValid(id);
+  return  mongoose.Types.ObjectId.isValid(id);
 }
 
-async function createCourse(req, res){
-  
-  const { name, description ,studentId} = req.body;
-  // console.log({ name, description })
-  const {role} = req.user;
+async function createCourse(req, res) {
+  const { name, description, studentIds } = req.body;
+  const { role } = req.user;
 
-  if (!isValidObjectId(studentId)) {
+  if (!Array.isArray(studentIds) || studentIds.some(id => !isValidObjectId(id))) {
     return new ResponseUtil({
       success: false,
-      message: 'Please Enter Valid studentId.',
+      message: 'Please Enter Valid studentIds.',
       data: null,
       statusCode: 400,
-    }, res)
+    }, res);
   }
 
-  if(role != "admin"){
+  if (role !== "admin") {
     return new ResponseUtil({
       success: false,
       message: 'Only Admin Can Create Courses',
@@ -32,43 +30,56 @@ async function createCourse(req, res){
       statusCode: 400,
     }, res);
   }
+
   try {
-    const courseDetail = await Course.findOne({name})
-    
+    const normalizedCourseName = name.toLowerCase();
+    const courseDetail = await Course.findOne({ name: normalizedCourseName }).collation({ locale: 'en', strength: 1 });
+
     if (courseDetail) {
-      // console.log(courseDetail) 
-      return new ResponseUtil(
-        { success: false, message: 'Course already exists', data: null, statusCode:400 },res
-      )
+      return new ResponseUtil({
+        success: false,
+        message: 'Course already exists',
+        data: null,
+        statusCode: 400,
+      }, res);
     }
-    const studentDetail = await auth.findOne({studentId})
-    if(!studentDetail){
-      return new ResponseUtil(
-        { success: false, message: 'Student not exists', data: null, statusCode:400 },res
-      )
+
+    const studentDetails = await auth.find({ _id: { $in: studentIds } });
+    if (studentDetails.length !== studentIds.length) {
+      return new ResponseUtil({
+        success: false,
+        message: 'Some students do not exist',
+        data: null,
+        statusCode: 400,
+      }, res);
     }
 
     const newCourse = new Course({
       name,
       description,
       createdBy: req.user.id,
-     studentId:studentId
+      studentIds: studentIds
     });
 
     await newCourse.save();
+    return new ResponseUtil({
+      success: true,
+      message: 'Course created successfully',
+      data: newCourse,
+      statusCode: 201,
+    }, res);
 
-    return new ResponseUtil(
-      { success: true, message: 'Course created successfully', data: newCourse, statusCode: 201 },
-      res
-    );
   } catch (error) {
-    // console.log(error)
-    return new ResponseUtil(
-      { success: false, message: 'Error creating course', data: null, statusCode: 500, errors: error.message },
-      res
-    );
+    return new ResponseUtil({
+      success: false,
+      message: 'Error creating course',
+      data: null,
+      statusCode: 500,
+      errors: error.message,
+    }, res);
   }
-};
+}
+
 
 async function getAllCourses(req, res) {
   const { role } = req.user;
@@ -171,7 +182,7 @@ async function getCourseById(req, res) {
    
     const course = await Course.aggregate([
       {
-        $match: { _id: mongoose.Types.ObjectId(id) } 
+        $match: { _id: new mongoose.Types.ObjectId(id) } 
       },
       {
         $lookup: {

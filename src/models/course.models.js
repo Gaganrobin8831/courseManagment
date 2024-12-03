@@ -4,7 +4,8 @@ const courseSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        unique:true
+        unique:true,
+        lowercase:true
     },
     description: {
         type: String,
@@ -15,10 +16,10 @@ const courseSchema = new mongoose.Schema({
         ref: 'student',
         required: true
     },
-    studentId:{
+    studentIds:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'student',
-    }
+    }]
 },{timestamps:true});
 
 const Course = mongoose.model('Course', courseSchema);

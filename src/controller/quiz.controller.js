@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const Lesson = require('../models/lesson.models');
 const question = require('../models/question.models');
 const Quiz = require('../models/quiz.models');
@@ -33,7 +34,7 @@ async function handleCreateQuiz(req,res) {
 
     try {
 
-      const lesonDetail = await Lesson.findOne({lessonId})
+      const lesonDetail = await Lesson.findOne({_id: lessonId})
       if(!lesonDetail){
         return new ResponseUtil({
           success: false,

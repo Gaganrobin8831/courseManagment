@@ -117,68 +117,6 @@ paths:
         '500':
           description: "Error assigning course"
 
-  /assign-lesson:
-    post:
-      summary: "Assign lesson to course"
-      description: "Assign a lesson to a course using lessonId and courseId."
-      operationId: "handleAssignLessonToCourses"
-      tags:
-      - "Admin"
-      requestBody:
-        description: "Data for assigning lesson to course"
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                lessonId:
-                  type: string
-                courseId:
-                  type: string
-              required:
-              - lessonId
-              - courseId
-      responses:
-        '200':
-          description: "Lesson Assigned To Course successfully"
-        '400':
-          description: "Student or Course not found"
-        '401':
-          description: "Unauthorized"
-        '500':
-          description: "Error assigning lesson"
-
-  /assign-quiz:
-    post:
-      summary: "Assign quiz to lesson"
-      description: "Assign a quiz to a lesson using lessonId and quizId."
-      operationId: "handleAssignQuizToLesson"
-      tags:
-      - "Admin"
-      requestBody:
-        description: "Data for assigning quiz to lesson"
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                lessonId:
-                  type: string
-                quizId:
-                  type: string
-              required:
-              - lessonId
-              - quizId
-      responses:
-        '200':
-          description: "Quiz assigned to lesson successfully"
-        '400':
-          description: "Quiz or Lesson not found"
-        '401':
-          description: "Unauthorized"
-        '500':
-          description: "Error assigning course"
-
   /students/reports:
     get:
       summary: "Generate reports for all students"

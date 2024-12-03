@@ -4,22 +4,36 @@ const { Progress } = require('../models/progress.models');
 const Quiz = require('../models/quiz.models');
 const ResponseUtil = require('../utility/respone.utility');
 
-async function handlequestionDetail(req, res) {
+function isValidObjectId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+
+}
+
+async function handleStudentDetail(req, res) {
   const { id } = req.body;
+
+  if (!isValidObjectId(id)) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Please Enter Valid studentId.',
+      data: null,
+      statusCode: 400,
+    }, res)
+  }
   try {
-   
+
     const student = await auth.findOne({ _id: id })
       .select("name _id email")
       .populate({
-        path: 'Courses', 
+        path: 'Courses',
         populate: {
-          path: 'lessons', 
+          path: 'lessons',
           model: 'Lesson',
           populate: {
             path: 'quiz',
             model: 'Quiz',
             populate: {
-              path: 'questions', 
+              path: 'questions',
               model: 'Question'
             }
           }
@@ -46,14 +60,23 @@ async function handlequestionDetail(req, res) {
 
 async function handlePlayQuiz(req, res) {
   const { questionId, lessonId } = req.body;
+  
+  if (!isValidObjectId(questionId) || !isValidObjectId(lessonId) ) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Please Enter Valid questionId or lessonId.',
+      data: null,
+      statusCode: 400,
+    }, res)
+  }
 
   try {
-    
+
     const lesson = await Lesson.findById(lessonId).populate({
-      path: 'quiz', 
+      path: 'quiz',
       model: 'Quiz',
       populate: {
-        path: 'questions', 
+        path: 'questions',
         model: 'Question'
       }
     });
@@ -67,7 +90,7 @@ async function handlePlayQuiz(req, res) {
       }, res);
     }
 
-  
+
     let progress = await Progress.findOne({ questionId, lessonId });
 
     if (!progress) {
@@ -86,7 +109,7 @@ async function handlePlayQuiz(req, res) {
       data: {
         lessonTitle: lesson.title,
         lessonContent: lesson.content,
-        quizzes: lesson.quiz, 
+        quizzes: lesson.quiz,
         progressStatus: progress.status,
       },
       statusCode: 200,
@@ -107,13 +130,21 @@ async function handleSubmitQuiz(req, res) {
   const { lessonId } = req.params;
   const { answers, questionId } = req.body;
 
+  if (!isValidObjectId(lessonId) ) {
+    return new ResponseUtil({
+      success: false,
+      message: 'Please Enter Valid lessonId.',
+      data: null,
+      statusCode: 400,
+    }, res)
+  }
   try {
-  
+
     const lesson = await Lesson.findById(lessonId).populate({
       path: 'quiz',
       model: 'Quiz',
       populate: {
-        path: 'questions', 
+        path: 'questions',
         model: 'Question'
       }
     });
@@ -127,7 +158,7 @@ async function handleSubmitQuiz(req, res) {
       }, res);
     }
 
-    const quiz = lesson.quiz[0]; 
+    const quiz = lesson.quiz[0];
 
     if (!quiz) {
       return new ResponseUtil({
@@ -138,7 +169,7 @@ async function handleSubmitQuiz(req, res) {
       }, res);
     }
 
-    
+
     let progress = await Progress.findOne({ questionId, quizId: quiz._id, lessonId });
 
     if (!progress) {
@@ -163,7 +194,7 @@ async function handleSubmitQuiz(req, res) {
 
     const percentageScore = (score / totalQuestions) * 100;
 
-  
+
     if (percentageScore >= quiz.passThreshold) {
       progress.status = 'completed';
     } else {
@@ -197,7 +228,7 @@ async function handleSubmitQuiz(req, res) {
 }
 
 module.exports = {
-  handlequestionDetail,
+  handleStudentDetail,
   handlePlayQuiz,
   handleSubmitQuiz
 }

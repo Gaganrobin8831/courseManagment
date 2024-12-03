@@ -13,7 +13,7 @@ async function createCourse(req, res) {
   const { name, description, studentIds } = req.body;
   const { role } = req.user;
 
-  if (!Array.isArray(studentIds) || studentIds.some(id => !isValidObjectId(id))) {
+  if (!isValidObjectId(studentIds)) {
     return new ResponseUtil({
       success: false,
       message: 'Please Enter Valid studentIds.',

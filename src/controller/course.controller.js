@@ -10,17 +10,9 @@ function isValidObjectId(id) {
 }
 
 async function createCourse(req, res) {
-  const { name, description, studentIds } = req.body;
+  const { name, description } = req.body;
   const { role } = req.user;
 
-  if (!isValidObjectId(studentIds)) {
-    return new ResponseUtil({
-      success: false,
-      message: 'Please Enter Valid studentIds.',
-      data: null,
-      statusCode: 400,
-    }, res);
-  }
 
   if (role !== "admin") {
     return new ResponseUtil({
@@ -44,21 +36,21 @@ async function createCourse(req, res) {
       }, res);
     }
 
-    const studentDetails = await auth.find({ _id: { $in: studentIds } });
-    if (studentDetails.length !== studentIds.length) {
-      return new ResponseUtil({
-        success: false,
-        message: 'Some students do not exist',
-        data: null,
-        statusCode: 400,
-      }, res);
-    }
+    // const studentDetails = await auth.find({ _id: { $in: studentIds } });
+    // if (studentDetails.length !== studentIds.length) {
+    //   return new ResponseUtil({
+    //     success: false,
+    //     message: 'Some students do not exist',
+    //     data: null,
+    //     statusCode: 400,
+    //   }, res);
+    // }
 
     const newCourse = new Course({
       name,
       description,
       createdBy: req.user.id,
-      studentIds: studentIds
+      // studentIds: studentIds
     });
 
     await newCourse.save();

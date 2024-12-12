@@ -111,8 +111,9 @@ async function handleCreateLessaon(req, res) {
       result.pdfUrl = await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
-            folder: 'course-management/pdfs',
+            folder: 'course-management/pdf',
             resource_type: 'raw',
+            format: 'pdf', 
           },
           (error, pdf) => {
             if (error) return reject(error);
